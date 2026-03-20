@@ -1,4 +1,11 @@
+<<<<<<< HEAD
 node_modules/
 .env
 build/
 dist/
+=======
+.angular
+dist
+node_modules
+.env
+>>>>>>> 4f355a49104eb8d5e0539b81c97eb8c8f9cd6d9c

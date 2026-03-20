@@ -1,13 +1,16 @@
+// models/Booking.js
+
 const mongoose = require('mongoose');
 
-const BookingSchema = new mongoose.Schema({
-  studentName: { type: String, required: true },
-  studentEmail: { type: String, required: true },
-  tutorName: { type: String, required: true },
-  subject: { type: String, required: true },
-  date: { type: Date, required: true },
-  timeSlot: { type: String, required: true }, // e.g., "10:00-11:00"
-  status: { type: String, default: "pending" } // pending, confirmed, completed
-}, { timestamps: true });
+const BookingSchema = new mongoose.Schema(
+  {
+    userName: { type: String, required: true },
+    date: { type: String, required: true },
+    startTime: { type: String, required: true },
+    endTime: { type: String, required: true },
+    description: { type: String, default: "" }
+  },
+  { timestamps: true }
+);
 
 module.exports = mongoose.model('Booking', BookingSchema);

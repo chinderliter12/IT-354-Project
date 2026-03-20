@@ -1,5 +1,6 @@
 {
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+<<<<<<< HEAD
   "version": 1,
   "cli": {
     "packageManager": "npm"
@@ -51,10 +52,47 @@
             }
           },
           "defaultConfiguration": "production"
+=======
+  "cli": {
+    "analytics": "1e1de97b-a744-405a-8b5a-0397bb3d01ce"
+  },
+  "newProjectRoot": "projects",
+  "projects": {
+    "demo": {
+      "architect": {
+        "build": {
+          "builder": "@angular/build:application",
+          "configurations": {
+            "development": {
+              "extractLicenses": false,
+              "namedChunks": true,
+              "optimization": false,
+              "sourceMap": true
+            },
+            "production": {
+              "extractLicenses": true,
+              "namedChunks": false,
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false
+            }
+          },
+          "options": {
+            "assets": [],
+            "index": "src/index.html",
+            "browser": "src/main.ts",
+            "outputPath": "dist/demo",
+            "polyfills": [],
+            "scripts": [],
+            "styles": ["src/global_styles.css"],
+            "tsConfig": "tsconfig.app.json"
+          }
+>>>>>>> 4f355a49104eb8d5e0539b81c97eb8c8f9cd6d9c
         },
         "serve": {
           "builder": "@angular/build:dev-server",
           "configurations": {
+<<<<<<< HEAD
             "production": {
               "buildTarget": "my-app:build:production"
             },
@@ -70,4 +108,24 @@
       }
     }
   }
+=======
+            "development": {
+              "buildTarget": "demo:build:development"
+            },
+            "production": {
+              "buildTarget": "demo:build:production"
+            }
+          },
+          "defaultConfiguration": "development"
+        }
+      },
+      "prefix": "app",
+      "projectType": "application",
+      "root": "",
+      "schematics": {},
+      "sourceRoot": "src"
+    }
+  },
+  "version": 1
+>>>>>>> 4f355a49104eb8d5e0539b81c97eb8c8f9cd6d9c
 }
