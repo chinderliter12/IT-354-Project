@@ -13,27 +13,21 @@
         <div>This is the adminDash.html page.</div><br>
         <ul class="list-group">
             <li class="list-group-item">
-                <div>
-                    All appointments:
-                </div>
-            </li>
-            <li class="list-group-item">
-                <div>
+                <div ng-controller="displayCourses">
                     View tutors and students:
+
                 </div>
             </li>
             <li class="list-group-item">
                 <div>
                     Assign tutor hours:
                         <div class="dropdown">
-                            <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                Select a tutor
-                            </button>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="#">Tutor 1</a></li>
-                                <li><a class="dropdown-item" href="#">Tutor 2</a></li>
-                                <li><a class="dropdown-item" href="#">Tutor 3</a></li>
-                            </ul>
+                            <select class="form-select" aria-label="Default select example">
+                                <option selected>Select a tutor</option>
+                                <option value="1">One</option>
+                                <option value="2">Two</option>
+                                <option value="3">Three</option>
+                            </select>
                         </div>
                         <label for="singleTutorDate">Date Affected:</label>
                         <input type="date" id="changedDate" name="changedDate">
@@ -54,6 +48,11 @@
             <li class="list-group-item">
                 <div>
                     Change tutoring hours for all:
+                </div>
+            </li>
+            <li class="list-group-item">
+                <div>
+                    All current appointments:
                 </div>
             </li>
         </ul>
