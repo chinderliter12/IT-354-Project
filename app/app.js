@@ -1,4 +1,4 @@
-// app.js
+
 
 var myApp = angular.module('myBigApp', []);
 
