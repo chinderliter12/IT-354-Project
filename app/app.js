@@ -1,3 +1,4 @@
+<script src="auth.js"></script>
 var myApp = angular.module('myBigApp', []);
 
 //Function that will fire before the application runs
@@ -7,11 +8,8 @@ var myApp = angular.module('myBigApp', []);
 //This function will fire as the application runs
 //myBigApp.run(function(){});
 
-//This function controls the data of the app
-//The array is used to prevent issues with minification
-myApp.controller('displayCourses', ['$scope', function($scope){
+myApp.controller('handleEvents', ['$scope', function($scope){
 
-    $scope.message = "hello again!";
     $scope.exampleCourses= [
         {
             name: "IT168", 
@@ -30,12 +28,9 @@ myApp.controller('displayCourses', ['$scope', function($scope){
             numTutors: 1,
             open: true
         }];
-}]);
 
-myApp.controller('checkCourses', ['$scope', function($scope){
-    if(exampleCourses[0]==null) {
-        return false;
-    } else {
-        return true;
+    $scope.requestSignOn = function(email, password) {
+        //Send login information to database here
     }
-}])
+
+}]);
