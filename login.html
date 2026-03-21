@@ -10,7 +10,8 @@
     
     <body class="text-center" ng-controller="handleEvents">
         <header ng-include="'guestHeader.html'"></header>
-        <div class="align-items-center justify-content-center" style="min-height: 400px; border: 2px solid gray; border-radius: 8px; padding: 40px;">
+        <div class="d-flex justify-content-center align-items-center">
+            <div style="min-height: 400px; width: 600px; border: 2px solid gray; border-radius: 8px; padding: 40px;">
             <label for="email">
             Email:<br>
             <input 
@@ -30,12 +31,22 @@
                 class="form-control"
                 ng-model="password"
             />
-            <br><br>
+            <br>
+            <select class="form-select" aria-label="Role selector for testing">
+                <option selected:>Select a role</option>
+                <option value="0">Guest</option>
+                <option value="1">Student</option>
+                <option value="2">Tutor</option>
+                <option value="3">Admin</option>
+            </select>
+            <br>
             <button 
                 class="w-100 btn btn-secondary btn-md"
                 ng-click="loginUser(email, password)">
-                Sign In
+                <a href="homePage.html" class="link-body-emphasis text-decoration-none" style="color: white;">Sign In</a>
             </button>
+            
+        </div>
         </div>
     </body>
 </html>
