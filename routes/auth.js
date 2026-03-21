@@ -1,40 +1,66 @@
-const router = require('express').Router();
-const User = require('../models/User');
+const express = require('express');
+const router = express.Router();
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const User = require('../models/User'); 
 
-// REGISTER
+// ---------- REGISTER ----------
 router.post('/register', async (req, res) => {
-  try {
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(req.body.password, salt);
+    const { name, username, email, password, role } = req.body;
 
-    const newUser = new User({
-      name: req.body.name,
-      username: req.body.username,
-      email: req.body.email,
-      password: hashedPassword
-    });
+    try {
+        // Check if user already exists
+        const existingUser = await User.findOne({ email });
+        if (existingUser) return res.status(400).json({ message: 'User already exists' });
 
-    const user = await newUser.save();
-    res.status(201).json({ message: "User registered ✅", userId: user._id });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+        // Hash the password
+        const hashedPassword = bcrypt.hashSync(password, 10);
+
+        // Create new user
+        const user = new User({
+            name,
+            username,
+            email,
+            password: hashedPassword,
+            role: role || 'user' 
+        });
+
+        await user.save();
+        res.json({ message: 'User created successfully' });
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Server error' });
+    }
 });
 
-// LOGIN
+// ---------- LOGIN ----------
 router.post('/login', async (req, res) => {
-  try {
-    const user = await User.findOne({ email: req.body.email });
-    if (!user) return res.status(400).json({ error: "User not found" });
+    const { email, password } = req.body;
 
-    const validPass = await bcrypt.compare(req.body.password, user.password);
-    if (!validPass) return res.status(400).json({ error: "Invalid password" });
+    try {
+        // Find user by email
+        const user = await User.findOne({ email });
+        if (!user) return res.status(400).json({ message: 'User not found' });
 
-    res.status(200).json({ message: "Logged in ✅", name: user.name, username: user.username });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+        // Compare password with hash
+        const isMatch = bcrypt.compareSync(password, user.password);
+        if (!isMatch) return res.status(400).json({ message: 'Invalid password' });
+
+        // Create JWT token
+        const token = jwt.sign(
+            { id: user._id, role: user.role },
+            process.env.JWT_SECRET,
+            { expiresIn: '1h' }
+        );
+
+        // Return token
+        res.json({ token });
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Server error' });
+    }
 });
 
 module.exports = router;
