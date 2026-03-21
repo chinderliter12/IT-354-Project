@@ -1,16 +1,9 @@
-// models/Booking.js
-
-const mongoose = require('mongoose');
-
-const BookingSchema = new mongoose.Schema(
-  {
-    userName: { type: String, required: true },
-    date: { type: String, required: true },
+const bookingSchema = new mongoose.Schema({
+    student: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+    tutor: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+    course: { type: mongoose.Schema.Types.ObjectId, ref: 'Course', required: true },
+    date: { type: Date, required: true },
     startTime: { type: String, required: true },
     endTime: { type: String, required: true },
-    description: { type: String, default: "" }
-  },
-  { timestamps: true }
-);
-
-module.exports = mongoose.model('Booking', BookingSchema);
+    description: { type: String }
+});
