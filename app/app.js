@@ -37,6 +37,18 @@ myApp.controller('handleEvents', ['$scope', '$http', function($scope, $http){
         .catch(err => console.error(err.data));
     }
 
+    // ---------- COURSES ----------
+    $scope.getCourses = function() {
+        $http.get(`${API_URL}/courses`)
+        .then(res => {
+            $scope.courses = res.data; // store courses for dropdown
+        })
+        .catch(err => console.error("Error fetching courses:", err));
+    }
+
+    // Call this on page load
+    $scope.getCourses();
+
     // ---------- BOOKING FUNCTIONS ----------
     $scope.createBooking = function() {
         const token = localStorage.getItem('token');
@@ -46,6 +58,7 @@ myApp.controller('handleEvents', ['$scope', '$http', function($scope, $http){
             studentName: $scope.booking.studentName,
             studentEmail: $scope.booking.studentEmail,
             tutorName: $scope.booking.tutorName,
+            courseId: $scope.booking.courseId, // <-- selected course
             subject: $scope.booking.subject,
             date: $scope.booking.date,
             startTime: $scope.booking.startTime,
@@ -82,4 +95,4 @@ myApp.controller('handleEvents', ['$scope', '$http', function($scope, $http){
 
     // Load bookings on page load if logged in
     $scope.getBookings();
-}])
+}]);
