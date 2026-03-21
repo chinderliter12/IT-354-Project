@@ -12,33 +12,33 @@
         <header ng-include="'guestHeader.html'"></header>
         <div class="d-flex justify-content-center align-items-center">
             <div style="min-height: 400px; width: 600px; border: 2px solid gray; border-radius: 8px; padding: 40px;">
-            <label for="email">
-            Email:<br>
-            <input 
-                id="email" 
-                type="text" 
-                placeholder="JohnSmith123" 
-                class="form-control"
-                ng-model="email"
-            />
-            </label><br><br>
-            <label for="password">
-                Password:<br>
-            <input 
-                id="password" 
-                type="password" 
-                placeholder="Password123!"
-                class="form-control"
-                ng-model="password"
-            />
-            <br>
-            <br>
-            <button 
-                class="w-100 btn btn-secondary btn-md"
-                ng-click="loginUser(email, password)">
-                Sign In
-            </button>
-            
+            <form ng-submit="loginUser()">
+                <div class="mb-3">
+                <label for="email">Email:</label>
+                <input 
+                    type="email" 
+                    id="email" 
+                    class="form-control" 
+                    placeholder="johnsmith@ilstu.edu"
+                    ng-model="loginData.email"
+                    required
+                >
+                </div>
+                
+                <div class="mb-3">
+                <label for="password">Password:</label>
+                <input 
+                    type="password" 
+                    id="password" 
+                    class="form-control" 
+                    placeholder="Password123!" 
+                    ng-model="loginData.password"
+                    required
+                >
+                </div>
+
+                <button type="submit" class="btn btn-secondary w-100">Sign In</button>
+            </form>
         </div>
         </div>
     </body>
