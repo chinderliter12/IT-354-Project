@@ -1,7 +1,7 @@
 var myApp = angular.module('myBigApp', []);
 
 myApp.controller('handleEvents', ['$scope', '$http', function($scope, $http){
-    const API_URL = "http://localhost:5000/api";
+    const API_URL = "http://localhost:5001/api";
 
     // Object to hold login info
     $scope.loginData = {};
