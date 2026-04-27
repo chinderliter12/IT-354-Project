@@ -1,7 +1,7 @@
 var myApp = angular.module('myBigApp', []);
 
 myApp.controller('handleEvents', ['$scope', '$http', function($scope, $http){
-    const API_URL = "http://localhost:5000/api";
+    const API_URL = "http://localhost:3000/api";
 
     // Object to hold login info
     $scope.loginData = {};
@@ -44,6 +44,14 @@ myApp.controller('handleEvents', ['$scope', '$http', function($scope, $http){
             $scope.courses = res.data; // store courses for dropdown
         })
         .catch(err => console.error("Error fetching courses:", err));
+    }
+
+    $scope.newCourse = {};
+
+    $scope.createCourse = function() {
+        const token = localStorage.getItem('token');
+        if(!token) return alert("Only admins are allowed to create new courses");
+
     }
 
     // Call this on page load
