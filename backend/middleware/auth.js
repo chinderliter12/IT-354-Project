@@ -1,21 +1,24 @@
 const jwt = require('jsonwebtoken');
 
-// verify user logged in
 const auth = (req, res, next) => {
-  const token = req.header('Authorization');
+  const authHeader = req.header('Authorization');
 
-  if (!token) return res.status(401).json({ msg: "No token" });
+  if (!authHeader) {
+    return res.status(401).json({ msg: "No token" });
+  }
+
+  const token = authHeader.split(' ')[1]; // 🔥 remove "Bearer"
 
   try {
-    const decoded = jwt.verify(token, "secretkey");
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
     req.user = decoded;
     next();
-  } catch {
-    res.status(401).json({ msg: "Invalid token" });
+  } catch (err) {
+    return res.status(401).json({ msg: "Invalid token" });
   }
 };
 
-// 🔥 admin only
+// admin only
 const admin = (req, res, next) => {
   if (req.user.role !== 'admin') {
     return res.status(403).json({ msg: "Admin only" });
