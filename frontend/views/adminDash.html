@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" ng-app="myExamples">
+<html lang="en" ng-app="myBigApp">
     <head>
         <title>Admin Dashboard</title>
         <link href="../assets/css/styles.css" rel="stylesheet" type="text/css" />
@@ -10,7 +10,7 @@
     </head>
     <body>
         <header ng-include="'../subviews/adminHeader.html'"></header>
-        <div style="margin-top: 3vw; margin-left: 15vw; margin-bottom: 3vw; margin-right: 15vw;" ng-controller="populateExamples">
+        <div class="main-container" ng-controller="populateExamples">
             <ul class="list-group">
                 <li class="list-group-item">
                     <div>
@@ -51,27 +51,21 @@
                 <li class="list-group-item">
                     <div>
                         <h5>Assign tutor hours:</h5>
-                            <div class="dropdown">
-                                <select class="form-select" aria-label="Default select example" style="width: 200px;">
-                                    <option selected>Select a tutor</option>
-                                    <option ng-repeat="tutor in exampleTutors">{{ tutor.fName }} {{ tutor.lName }}</option>
-                                </select><br>
-                            </div>
-                            <label for="singleTutorDate">Date Affected:</label>
-                            <input type="date" id="changedDate" name="changedDate"><br><br>
-                            
-                            Select a start time:
-                            <input 
-                                type="time" 
-                                id="singleTutorStart"
-                            /><br><br>
-                            
-                            Select an end time:
-                            <input 
-                                type="time"
-                                id="singleTutorEnd"
-                            /><br><br>
-                            <input type="submit">
+                        <div class="dropdown">
+                            <select class="form-select" aria-label="Default select example" style="width: 200px;">
+                                <option selected>Select a tutor</option>
+                                <option ng-repeat="tutor in exampleTutors">{{ tutor.fName }} {{ tutor.lName }}</option>
+                            </select><br>
+                        </div>
+                        <label for="singleTutorDate">Date Affected:</label>
+                        <input type="date" id="changedDate" name="changedDate"><br><br>
+                        
+                        Select a start time:
+                        <input type="time" id="singleTutorStart"/><br><br>
+                        
+                        Select an end time:
+                        <input type="time"id="singleTutorEnd"/><br><br>
+                        <input type="submit">
                     </div>
                 </li>
                 <li class="list-group-item">

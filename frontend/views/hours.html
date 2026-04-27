@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" ng-app="myExamples">
+<html lang="en" ng-app="myBigApp">
     <head>
         <title>IT Learning Center Hours</title>
         <link href="../assets/css/styles.css" rel="stylesheet" type="text/css" />
@@ -10,7 +10,7 @@
     </head>
     <body>
         <header ng-include="'../subviews/adminHeader.html'"></header>
-        <div style="margin: 40px;">
+        <div class="main-container">
             <h4 style="margin-bottom: 40px;">Tutoring sessions by course:</h4>
                 <ul class="list-group" style="min-height: 40px;" ng-controller="populateExamples">
                     <li ng-repeat="course in exampleCourses">
