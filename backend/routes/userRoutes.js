@@ -12,6 +12,7 @@ router.get('/', auth, roleAuth(["admin"]), async (req, res) => {
     const users = await User.find().select("-password");
     res.json(users);
   } catch (err) {
+    console.error("GET USERS ERROR:", err);
     res.status(500).json({ message: err.message });
   }
 });
@@ -23,22 +24,46 @@ router.post('/', auth, roleAuth(["admin"]), async (req, res) => {
 
     const { name, username, email, password, role } = req.body;
 
+    //  (prevents hook crashes)
+    if (!name || !username || !email || !password) {
+      return res.status(400).json({ message: "Missing required fields" });
+    }
+
+    // prevent duplicates
+    const existingUser = await User.findOne({
+      $or: [{ email }, { username }]
+    });
+
+    if (existingUser) {
+      return res.status(400).json({ message: "User already exists" });
+    }
+
+    // create user (password will be hashed in User model)
     const user = new User({
       name,
       username,
       email,
       password,
-      role: role || "student"
+      role: role || "student",
+      active: true
     });
 
-    await user.save();
+    await user.save(); // 🔥 triggers pre-save hashing
 
     res.status(201).json({
       message: "User created",
-      user
+      user: {
+        id: user._id,
+        name: user.name,
+        username: user.username,
+        email: user.email,
+        role: user.role,
+        active: user.active
+      }
     });
 
   } catch (err) {
+    console.error("CREATE USER ERROR:", err);
     res.status(500).json({ message: err.message });
   }
 });
@@ -58,9 +83,18 @@ router.put('/toggle/:id', auth, roleAuth(["admin"]), async (req, res) => {
 
     await user.save();
 
-    res.json(user);
+    res.json({
+      message: "User status updated",
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        active: user.active
+      }
+    });
 
   } catch (err) {
+    console.error("TOGGLE USER ERROR:", err);
     res.status(500).json({ message: err.message });
   }
 });

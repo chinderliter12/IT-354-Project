@@ -17,7 +17,7 @@ myApp.controller('handleEvents', ['$scope', '$http', function ($scope, $http) {
             name: document.getElementById("userName").value,
             username: document.getElementById("userUsername").value,
             email: document.getElementById("userEmail").value,
-            password: "redbirds123",
+            
             role: document.getElementById("userRole").value,
             active: true
         };

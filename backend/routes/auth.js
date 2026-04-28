@@ -7,7 +7,7 @@ const User = require('../models/User');
 
 
 
-// REGISTER
+// REGISTER 
 
 router.post('/register', async (req, res) => {
   try {
@@ -28,6 +28,7 @@ router.post('/register', async (req, res) => {
       return res.status(400).json({ message: "User already exists" });
     }
 
+    // HASH PASSWORD 
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const user = new User({
@@ -35,7 +36,8 @@ router.post('/register', async (req, res) => {
       username,
       email,
       password: hashedPassword,
-      role: role || "student"
+      role: role || "student",
+      active: true
     });
 
     await user.save();
@@ -95,7 +97,7 @@ router.post('/login', async (req, res) => {
         name: user.name,
         email: user.email
       },
-      process.env.JWT_SECRET,
+      process.env.JWT_SECRET || "devsecret123",
       { expiresIn: "2h" }
     );
 
@@ -117,6 +119,23 @@ router.post('/login', async (req, res) => {
 });
 
 
+// GET TUTORS (ADMIN DROPDOWN)
 
-// EXPORT ROUTER
+router.get('/tutors', async (req, res) => {
+  try {
+
+    const tutors = await User.find({
+      role: "tutor",
+      active: true
+    }).select("_id name email");
+
+    res.json(tutors);
+
+  } catch (err) {
+    console.error("GET TUTORS ERROR:", err);
+    res.status(500).json({ message: err.message });
+  }
+});
+
+
 module.exports = router;
