@@ -1,98 +1,134 @@
 var myApp = angular.module('myBigApp', []);
 
-myApp.controller('handleEvents', ['$scope', '$http', function($scope, $http){
+myApp.controller('handleEvents', ['$scope', '$http', function ($scope, $http) {
+
     const API_URL = "http://localhost:5001/api";
 
-    // Object to hold login info
+    // ================= INIT =================
     $scope.loginData = {};
+    $scope.register = {};
+    $scope.booking = {};
 
-    // ---------- LOGIN ----------
-    $scope.loginUser = function() {
+    // ================= DEBUG =================
+    $scope.test = function () {
+        console.log("Angular is working");
+        alert("Angular is connected!");
+    };
+
+    // ================= LOGIN =================
+    $scope.loginUser = function () {
+
+        console.log("LOGIN SENDING:", $scope.loginData);
+
         const { email, password } = $scope.loginData;
 
-        if(!email || !password) return alert("Please enter email and password");
+        if (!email || !password) {
+            return alert("Please enter email and password");
+        }
 
         $http.post(`${API_URL}/auth/login`, { email, password })
-        .then(res => {
-            const token = res.data.token;
-            if(!token) return alert("Login failed: no token returned");
+            .then(res => {
 
-            localStorage.setItem('token', token); // save token
-            console.log("Login successful, token saved:", token);
-            alert("Logged in successfully!");
-        })
-        .catch(err => {
-            console.error(err.data);
-            alert("Login failed: " + (err.data.message || "Unknown error"));
-        });
-    }
+                const token = res.data.token;
 
-    // ---------- REGISTER ----------
-    $scope.registerUser = function(name, username, email, password) {
-        $http.post(`${API_URL}/auth/register`, { name, username, email, password })
-        .then(res => {
-            console.log("User registered");
-            alert("Registration successful! Please login.");
-        })
-        .catch(err => console.error(err.data));
-    }
+                if (!token) {
+                    return alert("Login failed: no token returned");
+                }
 
-    // ---------- COURSES ----------
-    $scope.getCourses = function() {
+                localStorage.setItem('token', token);
+
+                console.log("Login success:", token);
+                alert("Logged in successfully!");
+
+                $scope.getBookings();
+
+            })
+            .catch(err => {
+                console.error(err);
+                alert(err.data?.message || "Login failed");
+            });
+    };
+
+    // ================= REGISTER =================
+    $scope.registerUser = function () {
+
+        console.log("REGISTER SENDING:", $scope.register);
+
+        const { name, username, email, password } = $scope.register;
+
+        if (!name || !username || !email || !password) {
+            return alert("All fields required");
+        }
+
+        $http.post(`${API_URL}/auth/register`,
+            $scope.register,
+            {
+                headers: { "Content-Type": "application/json" }
+            }
+        )
+            .then(res => {
+                console.log("REGISTER SUCCESS:", res.data);
+                alert("Registration successful! Now login.");
+                $scope.register = {};
+            })
+            .catch(err => {
+                console.error(err);
+                alert("ERROR: " + (err.data?.message || JSON.stringify(err.data)));
+            });
+    };
+
+    // ================= COURSES =================
+    $scope.getCourses = function () {
         $http.get(`${API_URL}/courses`)
-        .then(res => {
-            $scope.courses = res.data; // store courses for dropdown
-        })
-        .catch(err => console.error("Error fetching courses:", err));
-    }
+            .then(res => {
+                $scope.courses = res.data;
+            })
+            .catch(err => console.error("Courses error:", err));
+    };
 
-    // Call this on page load
+    // ================= CREATE BOOKING =================
+    $scope.createBooking = function () {
+
+        const token = localStorage.getItem('token');
+
+        if (!token) {
+            return alert("You must be logged in");
+        }
+
+        console.log("BOOKING SENDING:", $scope.booking);
+
+        $http.post(`${API_URL}/bookings`, $scope.booking, {
+            headers: { Authorization: `Bearer ${token}` }
+        })
+            .then(res => {
+                console.log("BOOKING CREATED:", res.data);
+                alert("Booking created!");
+                $scope.getBookings();
+            })
+            .catch(err => {
+                console.error(err);
+                alert(err.data?.error || "Booking failed");
+            });
+    };
+
+    // ================= GET BOOKINGS =================
+    $scope.getBookings = function () {
+
+        const token = localStorage.getItem('token');
+        if (!token) return;
+
+        $http.get(`${API_URL}/bookings/student`, {
+            headers: { Authorization: `Bearer ${token}` }
+        })
+            .then(res => {
+                console.log("BOOKINGS:", res.data);
+                $scope.bookings = res.data;
+            })
+            .catch(err => console.error("Bookings error:", err));
+    };
+
+    // ================= LOAD DATA =================
     $scope.getCourses();
-
-    // ---------- BOOKING FUNCTIONS ----------
-    $scope.createBooking = function() {
-        const token = localStorage.getItem('token');
-        if(!token) return alert("You must be logged in to create a booking");
-
-        const bookingData = {
-            studentName: $scope.booking.studentName,
-            studentEmail: $scope.booking.studentEmail,
-            tutorName: $scope.booking.tutorName,
-            courseId: $scope.booking.courseId, // <-- selected course
-            subject: $scope.booking.subject,
-            date: $scope.booking.date,
-            startTime: $scope.booking.startTime,
-            endTime: $scope.booking.endTime,
-            description: $scope.booking.description
-        };
-
-        $http.post(`${API_URL}/booking`, bookingData, {
-            headers: { Authorization: `Bearer ${token}` }
-        })
-        .then(res => {
-            console.log("Booking created:", res.data.booking);
-            alert("Booking created!");
-            $scope.getBookings();
-        })
-        .catch(err => {
-            console.error(err.data);
-            alert("Booking failed: " + err.data.error);
-        });
-    }
-
-    $scope.getBookings = function() {
-        const token = localStorage.getItem('token');
-        if(!token) return;
-
-        $http.get(`${API_URL}/booking`, {
-            headers: { Authorization: `Bearer ${token}` }
-        })
-        .then(res => {
-            $scope.bookings = res.data;
-        })
-        .catch(err => console.error(err.data));
-    }
-
-    // Load bookings on page load if logged in
     $scope.getBookings();
+
 }]);

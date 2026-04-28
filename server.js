@@ -1,29 +1,54 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const cors = require("cors");
 require("dotenv").config();
 
 const app = express();
 
+
+
+app.use(cors()); 
+
+
+// ======================
+// BODY PARSER
+// ======================
 app.use(express.json());
 
-// Routes
-const authRoutes = require("./routes/auth");
-const bookingRoutes = require("./routes/bookingRoutes"); // ✅ FIXED
 
-app.use("/api/auth", authRoutes);
-app.use("/api/bookings", bookingRoutes);
-
-// DB CONNECT
-mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log("MongoDB connected"))
-  .catch(err => console.log(err));
-
-// TEST ROUTE
+// ======================
+// TEST
+// ======================
 app.get("/", (req, res) => {
   res.send("API Running...");
 });
 
-const PORT = process.env.PORT || 5001;
+
+// ======================
+// ROUTES
+// ======================
+const authRoutes = require("./routes/auth");
+app.use("/api/auth", authRoutes);
+
+const bookingRoutes = require("./routes/bookingRoutes");
+app.use("/api/bookings", bookingRoutes);
+
+const courseRoutes = require("./routes/courseRoutes");
+app.use("/api/courses", courseRoutes);
+
+
+// ======================
+// DB CONNECT
+// ======================
+mongoose.connect(process.env.MONGO_URI)
+  .then(() => console.log("MongoDB connected"))
+  .catch(err => console.log(err));
+
+
+// ======================
+// START SERVER
+// ======================
+const PORT = 5001;
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
