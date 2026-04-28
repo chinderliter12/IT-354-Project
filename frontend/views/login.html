@@ -13,10 +13,10 @@
     <!-- Header -->
     <header ng-include="'../subviews/guestHeader.html'"></header>
     <div class="d-flex justify-content-center align-items-center">
-        <div style="min-height: 500px; width: 600px; border: 2px solid gray; border-radius: 8px; padding: 40px;">
+        <div class="main-container" style="min-width: 500px; border: 2px solid gray; border-radius: 8px; padding: 40px;">
             <form ng-submit="loginUser()" novalidate>
 
-                <h2>Login</h2>
+                <h4>Login</h4><br>
                 <div class="mb-3">
                     <label>Email:</label>
                     <input type="email" class="form-control" ng-model="loginData.email" required>
@@ -27,42 +27,6 @@
                 </div>
                 <button type="submit" class="btn btn-secondary w-100">
                     Sign In
-                </button>
-            </form>
-            <hr>
-
-            <form ng-submit="registerUser()" novalidate>
-
-                <h2>Register</h2>
-
-                <div class="mb-3">
-                    <label>Name:</label>
-                    <input type="text" class="form-control" ng-model="register.name" required>
-                </div>
-
-                <div class="mb-3">
-                    <label>Username:</label>
-                    <input type="text" class="form-control" ng-model="register.username" required>
-                </div>
-
-                <div class="mb-3">
-                    <label>Email:</label>
-                    <input type="email"
-                           class="form-control"
-                           ng-model="register.email"
-                           required>
-                </div>
-
-                <div class="mb-3">
-                    <label>Password:</label>
-                    <input type="password"
-                           class="form-control"
-                           ng-model="register.password"
-                           required>
-                </div>
-
-                <button type="submit" class="btn btn-success w-100">
-                    Register
                 </button>
             </form>
         </div>

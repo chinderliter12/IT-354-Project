@@ -15,7 +15,6 @@ app.use('/api/auth', authRoute);
 app.use('/api/booking', bookingRoutes);
 app.use('/api/courses', courseRoutes);
 
-
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB connected"))
   .catch(err => console.log(err));
