@@ -11,11 +11,6 @@ myApp.controller('handleEvents', ['$scope', '$http', function ($scope, $http) {
     $scope.appointments = [];
     $scope.courses = [];
 
-    $scope.test = function () {
-        console.log("Angular is working");
-        alert("Angular is connected!");
-    };
-
     // Login user and store JWT + user info
     $scope.loginUser = function () {
 
@@ -26,9 +21,7 @@ myApp.controller('handleEvents', ['$scope', '$http', function ($scope, $http) {
                 localStorage.setItem("userId", res.data.user.id);
                 localStorage.setItem("role", res.data.user.role);
                 localStorage.setItem("name", res.data.user.name);
-
                 alert("Login successful!");
-
                 $scope.getAppointments();
 
             })
@@ -64,41 +57,37 @@ myApp.controller('handleEvents', ['$scope', '$http', function ($scope, $http) {
             .catch(err => console.error(err));
     };
 
-    // Create a new appointment 
-    $scope.bookAppointment = function () {
+    // Add New Course
+    $scope.addCourse = function () {
 
-        const token = localStorage.getItem("token");
+        const newCourse = {
+            name: document.getElementById("name").value,
+            tutor: document.getElementById("tutor").value,
+            description: document.getElementById("desc").value
+        };
 
-        if (!token) {
-            return alert("You must be logged in to book");
+        if (!newCourse.name || !newCourse.tutor || !newCourse.description) {
+            return alert("All fields required");
         }
 
-        $http.post(`${API_URL}/appointments`, $scope.appointment, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        })
-        .then(res => {
+        $http.post(`${API_URL}/courses`, newCourse)
+            .then(res => {
+                console.log("COURSE CREATED:", res.data);
 
-            alert("Appointment booked!");
+                document.getElementById("name").value = "";
+                document.getElementById("tutor").value = "";
+                document.getElementById("desc").value = "";
 
-            $scope.appointment = {};
-            $scope.getAppointments();
-
-        })
-        .catch(err => {
-            console.error(err);
-            alert(err.data?.message || "Booking failed");
-        });
+                 $scope.getCourses();
+            })
+            .catch(err => console.error(err));
     };
 
     // Get logged-in user's appointments
     $scope.getAppointments = function () {
 
         const token = localStorage.getItem("token");
-
         if (!token) return;
-
         $http.get(`${API_URL}/appointments/my`, {
             headers: {
                 Authorization: `Bearer ${token}`
@@ -144,3 +133,5 @@ myApp.controller('handleEvents', ['$scope', '$http', function ($scope, $http) {
     $scope.getAppointments();
 
 }]);
+
+myApp.controller('filter')
