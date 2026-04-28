@@ -133,5 +133,3 @@ myApp.controller('handleEvents', ['$scope', '$http', function ($scope, $http) {
     $scope.getAppointments();
 
 }]);
-
-myApp.controller('filter')
