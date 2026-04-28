@@ -13,31 +13,31 @@ myApp.controller('handleEvents', ['$scope', '$http', function ($scope, $http) {
 
     //Create new user
     $scope.addUser = function () {
-        const newUser = {
-            name: document.getElementById("userName").value,
-            username: document.getElementById("userUsername").value,
-            email: document.getElementById("userEmail").value,
-            
-            role: document.getElementById("userRole").value,
-            active: true
-        };
+    const newUser = {
+        name: document.getElementById("userName").value,
+        username: document.getElementById("userUsername").value,
+        email: document.getElementById("userEmail").value,
+        password: document.getElementById("userPass").value,
+        role: document.getElementById("userRole").value,
+        active: true
+    };
 
-        if (!newUser.name || !newUser.username || !newUser.email || !newUser.role) {
-            return alert("Invalid user information");
-        }
+    if (!newUser.name || !newUser.username || !newUser.email || !newUser.role) {
+        return alert("Invalid user information");
+    }
 
-        $http.post(`${API_URL}/users`, newUser)
-            .then(res => {
-                console.log("User created:", res.data);
+    $http.post(`${API_URL}/users`, newUser)
+        .then(res => {
+            console.log("User created:", res.data);
 
-                document.getElementById("userName").value = "";
-                document.getElementById("userUsername").value = "";
-                document.getElementById("userEmail").value = "";
-                document.getElementById("userRole").value = "";
+            document.getElementById("userName").value = "";
+            document.getElementById("userUsername").value = "";
+            document.getElementById("userEmail").value = "";
+            document.getElementById("userRole").value = "";
 
-                $scope.getUsers();
-            })
-            .catch(err => console.error(err));
+            $scope.getUsers();
+        })
+        .catch(err => console.error(err));
     };
 
     $scope.getUsers = function () {
