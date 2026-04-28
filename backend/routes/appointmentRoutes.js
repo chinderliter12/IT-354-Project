@@ -6,7 +6,7 @@ const auth = require('../middleware/auth');
 const roleAuth = require('../middleware/roleAuth');
 
 
-// Create appointment (student)
+// Create appointment
 router.post('/', auth, async (req, res) => {
   try {
 
@@ -16,7 +16,6 @@ router.post('/', auth, async (req, res) => {
       return res.status(400).json({ message: "Missing required fields" });
     }
 
-    // Block same-day appointments
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
@@ -29,11 +28,11 @@ router.post('/', auth, async (req, res) => {
       });
     }
 
-    // Prevent double booking
     const existing = await Appointment.findOne({
       tutor,
       date,
       startTime,
+      endTime,
       status: { $ne: "cancelled" }
     });
 
@@ -70,7 +69,7 @@ router.get('/my', auth, async (req, res) => {
 
     const appointments = await Appointment.find({
       student: req.user.id
-    }).populate("tutor", "name email");
+    });
 
     res.json(appointments);
 
@@ -80,7 +79,7 @@ router.get('/my', auth, async (req, res) => {
 });
 
 
-// Cancel appointment (student)
+// Cancel appointment
 router.put('/cancel/:id', auth, async (req, res) => {
   try {
 
@@ -106,13 +105,13 @@ router.put('/cancel/:id', auth, async (req, res) => {
 });
 
 
-// Get tutor appointments
+// Get tutor appointments (string-based)
 router.get('/tutor', auth, roleAuth(["tutor"]), async (req, res) => {
   try {
 
     const appointments = await Appointment.find({
-      tutor: req.user.id
-    }).populate("student", "name email");
+      tutor: req.user.name
+    });
 
     res.json(appointments);
 
@@ -122,7 +121,7 @@ router.get('/tutor', auth, roleAuth(["tutor"]), async (req, res) => {
 });
 
 
-// Add tutor comment
+// Add comment
 router.put('/comment/:id', auth, roleAuth(["tutor"]), async (req, res) => {
   try {
 
@@ -134,7 +133,7 @@ router.put('/comment/:id', auth, roleAuth(["tutor"]), async (req, res) => {
       return res.status(404).json({ message: "Not found" });
     }
 
-    if (appointment.tutor.toString() !== req.user.id) {
+    if (appointment.tutor !== req.user.name) {
       return res.status(403).json({ message: "Not allowed" });
     }
 
@@ -160,7 +159,7 @@ router.put('/no-show/:id', auth, roleAuth(["tutor"]), async (req, res) => {
       return res.status(404).json({ message: "Not found" });
     }
 
-    if (appointment.tutor.toString() !== req.user.id) {
+    if (appointment.tutor !== req.user.name) {
       return res.status(403).json({ message: "Not allowed" });
     }
 
