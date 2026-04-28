@@ -14,7 +14,9 @@ app.use(express.json());
 const authRoute = require('./routes/auth');
 const bookingRoutes = require('./routes/bookingRoutes');
 const courseRoutes = require('./routes/courseRoutes');
+const appointmentRoutes = require('./routes/appointmentRoutes');
 
+app.use('/api/appointments', appointmentRoutes);
 app.use('/api/auth', authRoute);
 app.use('/api/booking', bookingRoutes);
 app.use('/api/courses', courseRoutes);
