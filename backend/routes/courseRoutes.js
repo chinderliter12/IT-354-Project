@@ -1,25 +1,50 @@
 const express = require('express');
 const router = express.Router();
-const Course = require('../models/Course'); // Your Course schema
+const Course = require('../models/Course');
 
-// GET all courses
+const auth = require('../middleware/auth');
+const role = require('../middleware/role');
+
+
+
+// GET ALL COURSES 
+
 router.get('/', async (req, res) => {
     try {
-        const courses = await Course.find().populate('tutor', 'name email');
+        const courses = await Course.find()
+            .populate('tutor', 'name email username');
+
         res.json(courses);
     } catch (err) {
+        console.error(err);
         res.status(500).json({ error: err.message });
     }
 });
 
-// POST a new course
-router.post('/', async (req, res) => {
+
+
+// CREATE COURSE (TUTOR ONLY)
+
+router.post('/', auth, role(["tutor"]), async (req, res) => {
     try {
-        const { name, description, tutor } = req.body;
-        const course = new Course({ name, description, tutor });
+        const { name, description } = req.body;
+
+        if (!name || !description) {
+            return res.status(400).json({ error: "Name and description required" });
+        }
+
+        const course = new Course({
+            name,
+            description,
+            tutor: req.user.id // 👈 automatically assign logged-in tutor
+        });
+
         await course.save();
-        res.json(course);
+
+        res.status(201).json(course);
+
     } catch (err) {
+        console.error(err);
         res.status(500).json({ error: err.message });
     }
 });
