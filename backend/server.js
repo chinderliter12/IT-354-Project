@@ -7,11 +7,11 @@ const cors = require('cors');
 
 const app = express();
 
-// MIDDLEWARE
+// Middleware
 app.use(cors());
 app.use(express.json());
 
-// ROUTES
+// Routes
 const authRoute = require('./routes/auth');
 const bookingRoutes = require('./routes/bookingRoutes');
 const courseRoutes = require('./routes/courseRoutes');
@@ -29,20 +29,20 @@ app.get('/api/health', (req, res) => {
     res.json({ status: "OK", message: "Server is running" });
 });
 
-// DB CONNECTION 
+// DB Connection
 mongoose.connect(process.env.MONGO_URI)
     .then(() => console.log("MongoDB connected"))
     .catch(err => {
         console.error("MongoDB connection error:", err);
     });
 
-// FRONTEND
+// Frontend 
 app.use(express.static(path.join(__dirname, '../frontend')));
 
 app.get('/', (req, res) => {
     res.redirect('/views/homePage.html');
 });
 
-// START SERVER
+// Start Server
 const PORT = process.env.PORT || 5001;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

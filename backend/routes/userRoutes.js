@@ -24,7 +24,7 @@ router.post('/', auth, roleAuth(["admin"]), async (req, res) => {
 
     const { name, username, email, password, role } = req.body;
 
-    //  (prevents hook crashes)
+    //  
     if (!name || !username || !email || !password) {
       return res.status(400).json({ message: "Missing required fields" });
     }
@@ -38,7 +38,7 @@ router.post('/', auth, roleAuth(["admin"]), async (req, res) => {
       return res.status(400).json({ message: "User already exists" });
     }
 
-    // create user (password will be hashed in User model)
+    // create user 
     const user = new User({
       name,
       username,
@@ -48,7 +48,7 @@ router.post('/', auth, roleAuth(["admin"]), async (req, res) => {
       active: true
     });
 
-    await user.save(); // 🔥 triggers pre-save hashing
+    await user.save(); // 
 
     res.status(201).json({
       message: "User created",
@@ -69,7 +69,7 @@ router.post('/', auth, roleAuth(["admin"]), async (req, res) => {
 });
 
 
-// Activate / deactivate user
+
 router.put('/toggle/:id', auth, roleAuth(["admin"]), async (req, res) => {
   try {
 
