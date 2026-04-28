@@ -4,9 +4,9 @@ const Booking = require('../models/Booking');
 const auth = require('../middleware/auth');
 const role = require('../middleware/role');
 
-// ======================
+
 // CREATE BOOKING (STUDENT ONLY)
-// ======================
+
 router.post('/', auth, role(["student"]), async (req, res) => {
   try {
     const { tutorId, date, startTime, endTime, description } = req.body;

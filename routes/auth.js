@@ -31,9 +31,18 @@ router.post('/register', async (req, res) => {
       role: role || "student"
     });
 
-    await user.save();
+ await user.save();
 
-    res.status(201).json({ message: "User created successfully" });
+res.status(201).json({
+    message: "User created successfully",
+    user: {
+        id: user._id,
+        name: user.name,
+        username: user.username,
+        email: user.email,
+        role: user.role
+    }
+});
 
   } catch (err) {
     console.error(err);
