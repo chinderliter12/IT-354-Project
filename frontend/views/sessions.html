@@ -14,37 +14,10 @@
 <body>
     <header ng-include="headerString"></header>
     <div class="container mt-4" ng-controller="handleEvents">
-        <div class="card p-4 mb-4">
-            <h3 class="mb-3">Book a Tutoring Session</h3>
-            <input class="form-control mb-2"
-                   placeholder="Course (e.g. IT 179)"
-                   ng-model="appointment.course">
-            <input class="form-control mb-2"
-                   placeholder="Tutor Name"
-                   ng-model="appointment.tutor">
-            <input class="form-control mb-2"
-                   placeholder="Start Time (e.g. 10:00 AM)"
-                   ng-model="appointment.startTime">
-
-            <input class="form-control mb-2"
-                   placeholder="End Time (e.g. 11:00 AM)"
-                   ng-model="appointment.endTime">
-
-            <button class="btn btn-primary w-100"
-                    ng-click="bookAppointment()">
-                Book Appointment
-            </button>
-
-        </div>
-
         <div class="card p-4">
-
             <h3 class="mb-3">My Appointments</h3>
-
             <div ng-if="appointments.length > 0">
-
                 <table class="table table-striped">
-
                     <thead>
                         <tr>
                             <th>Course</th>
@@ -55,7 +28,6 @@
                             <th>Action</th>
                         </tr>
                     </thead>
-
                     <tbody>
                         <tr ng-repeat="a in appointments">
 
@@ -71,12 +43,9 @@
                                     Cancel
                                 </button>
                             </td>
-
                         </tr>
                     </tbody>
-
                 </table>
-
             </div>
 
             <div ng-if="appointments.length === 0">

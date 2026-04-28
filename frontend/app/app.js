@@ -66,6 +66,25 @@ myApp.controller('handleEvents', ['$scope', '$http', function ($scope, $http) {
     $scope.maxDate = max.toISOString().split("T")[0];
 
 
+    $scope.determineHeader = function () {
+        const role = localStorage.getItem("role") || 'guest';
+        const name = localStorage.getItem("name") || '';
+
+        $scope.logName = name;
+        $scope.userRole = role;
+
+        if(role == 'admin') {
+            $scope.headerString = '../subviews/adminHeader.html';
+        } else if (role== 'tutor') {
+            $scope.headerString = '../subviews/studentHeader.html';
+        } else if (role == 'student') {
+            $scope.headerString = '../subviews/studentHeader.html';
+        } else {
+            $scope.headerString = '../subviews/guestHeader.html';
+        }
+                
+    };
+
     // User Login
     $scope.loginUser = function () {
 
@@ -76,26 +95,19 @@ myApp.controller('handleEvents', ['$scope', '$http', function ($scope, $http) {
                 localStorage.setItem("userId", res.data.user.id);
                 localStorage.setItem("role", res.data.user.role);
                 localStorage.setItem("name", res.data.user.name);
+
                 $scope.logName = res.data.user.name;
 
                 $http.defaults.headers.common.Authorization =
                     `Bearer ${res.data.token}`;
+
+                $scope.determineHeader();
 
                 alert("Login successful!");
 
                 // redirection based on user role
                 const role = res.data.user.role;
 
-                $scope.userRole = role;
-                if(role == 'admin') {
-                    $scope.headerString = '../subviews/adminHeader.html';
-                } else if (role== 'tutor') {
-                    $scope.headerString = '../subviews/studentHeader.html';
-                } else if (role == 'student') {
-                    $scope.headerString = '../subviews/studentHeader.html';
-                } else {
-                    $scope.headerString = '../subviews/guestHeader.html';
-                }
                 window.location.href = "/views/homePage.html";
             })
             .catch(err => {
@@ -105,11 +117,13 @@ myApp.controller('handleEvents', ['$scope', '$http', function ($scope, $http) {
     };
 
     $scope.logoutUser = function() {
-        localStorage.removeItem("token", res.data.token);
-        localStorage.removeItem("userId", res.data.user.id);
-        localStorage.removeItem("role", res.data.user.role);
-        localStorage.removeItem("name", res.data.user.name);
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.removeItem("name");
 
+        $scope.determineHeader();
+        
         delete $http.defaults.headers.common.Authorization;
         window.location.href = "/views/homePage.html";
     }
@@ -247,5 +261,5 @@ myApp.controller('handleEvents', ['$scope', '$http', function ($scope, $http) {
     $scope.getUsers();
     $scope.getCourses();
     $scope.getAppointments();
-
+    $scope.determineHeader();
 }]);
