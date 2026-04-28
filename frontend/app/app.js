@@ -10,6 +10,10 @@ myApp.controller('handleEvents', ['$scope', '$http', function ($scope, $http) {
     $scope.appointment = {};
     $scope.appointments = [];
     $scope.courses = [];
+    $scope.availability = [];
+    $scope.userRole = 'guest';
+    $scope.headerString = '../subviews/guestHeader.html';
+    $scope.logName = '';
 
     //Create new user
     $scope.addUser = function () {
@@ -48,11 +52,6 @@ myApp.controller('handleEvents', ['$scope', '$http', function ($scope, $http) {
             .catch(err => console.error(err));
     }
 
-    // Login user and store JWT + user info
-    // Add tutor availability storage 
-    $scope.availability = [];
-
-    // ADD: load saved token (FIX)
     const savedToken = localStorage.getItem("token");
     if (savedToken) {
         $http.defaults.headers.common.Authorization = `Bearer ${savedToken}`;
@@ -77,6 +76,7 @@ myApp.controller('handleEvents', ['$scope', '$http', function ($scope, $http) {
                 localStorage.setItem("userId", res.data.user.id);
                 localStorage.setItem("role", res.data.user.role);
                 localStorage.setItem("name", res.data.user.name);
+                $scope.logName = res.data.user.name;
 
                 $http.defaults.headers.common.Authorization =
                     `Bearer ${res.data.token}`;
@@ -86,16 +86,17 @@ myApp.controller('handleEvents', ['$scope', '$http', function ($scope, $http) {
                 // redirection based on user role
                 const role = res.data.user.role;
 
-                if (role === "admin") {
-                    window.location.href = "/views/adminDash.html";
+                $scope.userRole = role;
+                if(role == 'admin') {
+                    $scope.headerString = '../subviews/adminHeader.html';
+                } else if (role== 'tutor') {
+                    $scope.headerString = '../subviews/studentHeader.html';
+                } else if (role == 'student') {
+                    $scope.headerString = '../subviews/studentHeader.html';
+                } else {
+                    $scope.headerString = '../subviews/guestHeader.html';
                 }
-                else if (role === "tutor") {
-                    window.location.href = "/views/tutorDashboard.html";
-                }
-                else {
-                    window.location.href = "/views/hours.html";
-                }
-
+                window.location.href = "/views/homePage.html";
             })
             .catch(err => {
                 console.error(err);
@@ -103,22 +104,15 @@ myApp.controller('handleEvents', ['$scope', '$http', function ($scope, $http) {
             });
     };
 
+    $scope.logoutUser = function() {
+        localStorage.removeItem("token", res.data.token);
+        localStorage.removeItem("userId", res.data.user.id);
+        localStorage.removeItem("role", res.data.user.role);
+        localStorage.removeItem("name", res.data.user.name);
 
-    // Register User
-    $scope.registerUser = function () {
-
-        $http.post(`${API_URL}/auth/register`, $scope.register)
-            .then(res => {
-
-                alert("Registration successful!");
-                $scope.register = {};
-
-            })
-            .catch(err => {
-                console.error(err);
-                alert(err.data?.message || "Registration failed");
-            });
-    };
+        delete $http.defaults.headers.common.Authorization;
+        window.location.href = "/views/homePage.html";
+    }
 
 
     // Get courses
@@ -243,8 +237,6 @@ myApp.controller('handleEvents', ['$scope', '$http', function ($scope, $http) {
             alert(err.data?.message || "Booking failed");
         });
     };
-
-
  
     $scope.isSlotAvailable = function(slot, bookedSlots) {
         return !bookedSlots.includes(slot);

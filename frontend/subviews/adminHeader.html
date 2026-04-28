@@ -15,16 +15,10 @@
                     <li class=nav-item>
                         <a href="adminDash.html" class="nav-link link-body-emphasis px-2">Admin Dashboard</a>
                     </li>
-                    <li class="nav-item">
-                        <a href="db_test.html" class="nav-link link-body-emphasis px-2">Database I/O Testing</a>
-                    </li>
                 </ul>
                 <ul class="nav">
                     <li class = "nav-item">
-                        <li class="nav-item" ng-if="!isLoggedIn">
-                            <a href="login.html" class="nav-link link-body-emphasis px-2">Login</a>
-                        </li>
-                        <li class="nav-item" ng-if="isLoggedIn">
+                        <li class="nav-item">
                             <a href="#" class="nav-link link-body-emphasis px-2" ng-click="logout()">Logout</a>
                         </li>
                     </li>

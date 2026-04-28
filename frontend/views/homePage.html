@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" ng-app="myBigApp">
+<html lang="en" ng-app="myBigApp" ng-controller="handleEvents">
     <head>
         <title>Tutoring Center Home Page</title>
         <link href="../assets/css/styles.css" rel="stylesheet" type="text/css" />
@@ -8,27 +8,18 @@
         <script src="../app/app.js"></script>
     </head>
     <body>
-        <header ng-include="'../subviews/adminHeader.html'"></header>
+        <div></div>
+        <header ng-include="headerString"></header>
         <div class="main-container">
             <h4 style="margin: 40px;">Home Page</h4>
 
             <!-- Search Section -->
-            <div class="container justify-content-center px-4" style="margin: 100px">
-                <div class="d-flex flex-row mb-3" >
-                    <div class="col-8">
-                    <input 
-                        id="searchBox" 
-                        type="text" 
-                        placeholder="Search a course..."
-                        class="form-control"
-                    />
-                    </div>
-                    <div style="width: 10px;"></div>
-                    <div>
-                    <button class="w-1 btn btn-secondary btn-md form-control" style="min-width: 80px;">Search</button>
-                    </div>
-                </div>
-                <p><a href="login.html">Log in</a> to make an appointment and view your tutoring sessions.</p>
+            <div class="container justify-content-center px-4" style="margin: 100px" ng-if="role!=guest">
+                Welcome, {{res.data.user.name}}
+            </div>
+            <div class="container justify-content-center px-4 mx-auto" style="margin: 100px" ng-if="role==guest">
+                <p class="mx-auto">Welcome to the IT Learning Center!</p>
+                <p class="mx-auto">Please <a href=login.html>log in</a> to view your appointments and book new tutoring sessions.</p>
             </div>
 
             <div id="carouselExampleIndicators" class="carousel slide">

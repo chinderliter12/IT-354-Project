@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" ng-app="myBigApp">
+<html lang="en" ng-app="myBigApp" ng-controller="handleEvents">
 
 <head>
     <title>Admin Dashboard</title>
@@ -11,9 +11,10 @@
 </head>
 
 <body>
-    <header ng-include="'../subviews/adminHeader.html'"></header>
+    <div ng-if=""></div>
+    <header ng-include="headerString"></header>
 
-    <div style="margin: 40px;" ng-controller="handleEvents">
+    <div style="margin: 40px;">
         <ul class="list-group">
             <li class="list-group-item">
                 <h5>Create New User</h5>

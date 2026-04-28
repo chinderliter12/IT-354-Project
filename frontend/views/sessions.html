@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" ng-app="myBigApp">
+<html lang="en" ng-app="myBigApp" ng-controller="handleEvents">
 
 <head>
     <title>Sessions - Booking System</title>
@@ -12,23 +12,16 @@
 </head>
 
 <body>
-
-    <header ng-include="'../subviews/adminHeader.html'"></header>
-
+    <header ng-include="headerString"></header>
     <div class="container mt-4" ng-controller="handleEvents">
-
         <div class="card p-4 mb-4">
-
             <h3 class="mb-3">Book a Tutoring Session</h3>
-
             <input class="form-control mb-2"
                    placeholder="Course (e.g. IT 179)"
                    ng-model="appointment.course">
-
             <input class="form-control mb-2"
                    placeholder="Tutor Name"
                    ng-model="appointment.tutor">
-
             <input class="form-control mb-2"
                    placeholder="Start Time (e.g. 10:00 AM)"
                    ng-model="appointment.startTime">
