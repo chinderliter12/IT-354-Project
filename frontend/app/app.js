@@ -11,7 +11,6 @@ myApp.controller('handleEvents', ['$scope', '$http', function ($scope, $http) {
     $scope.appointments = [];
     $scope.courses = [];
 
-<<<<<<< HEAD
     //Create new user
     $scope.addUser = function () {
         const newUser = {
@@ -50,7 +49,6 @@ myApp.controller('handleEvents', ['$scope', '$http', function ($scope, $http) {
     }
 
     // Login user and store JWT + user info
-=======
     // ADD: tutor availability storage (NEW)
     $scope.availability = [];
 
@@ -70,7 +68,6 @@ myApp.controller('handleEvents', ['$scope', '$http', function ($scope, $http) {
 
 
     // LOGIN USER
->>>>>>> origin/login-fix
     $scope.loginUser = function () {
 
         $http.post(`${API_URL}/auth/login`, $scope.loginData)
@@ -106,9 +103,6 @@ myApp.controller('handleEvents', ['$scope', '$http', function ($scope, $http) {
             });
     };
 
-<<<<<<< HEAD
-    // Fetch all courses
-=======
 
     // REGISTER USER
     $scope.registerUser = function () {
@@ -128,7 +122,6 @@ myApp.controller('handleEvents', ['$scope', '$http', function ($scope, $http) {
 
 
     // GET COURSES
->>>>>>> origin/login-fix
     $scope.getCourses = function () {
 
         $http.get(`${API_URL}/courses`)
@@ -209,11 +202,6 @@ myApp.controller('handleEvents', ['$scope', '$http', function ($scope, $http) {
         });
     };
 
-<<<<<<< HEAD
-    // Initial data load
-    $scope.getUsers();
-=======
-
     // BOOK APPOINTMENT
     $scope.bookAppointment = function () {
 
@@ -263,8 +251,8 @@ myApp.controller('handleEvents', ['$scope', '$http', function ($scope, $http) {
     };
 
 
-    // INIT
->>>>>>> origin/login-fix
+    // Initial data load
+    $scope.getUsers();
     $scope.getCourses();
     $scope.getAppointments();
 

@@ -17,11 +17,6 @@ const bookingRoutes = require('./routes/bookingRoutes');
 const courseRoutes = require('./routes/courseRoutes');
 const appointmentRoutes = require('./routes/appointmentRoutes');
 const userRoutes = require('./routes/userRoutes');
-<<<<<<< HEAD
-=======
-
-app.use('/api/users', userRoutes);
->>>>>>> origin/login-fix
 
 app.use('/api/appointments', appointmentRoutes);
 app.use('/api/auth', authRoute);
