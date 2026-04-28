@@ -21,35 +21,13 @@
 
         <!-- INPUT FORM -->
         <div class="container justify-content-center mx-auto" style="max-width: 600px;">
-
             <div class="d-flex flex-column gap-3">
-
-                <input id="name"
-                       type="text"
-                       placeholder="Course"
-                       class="form-control mx-auto"
-                       style="max-width: 500px;" />
-
-                <input id="tutor"
-                       type="text"
-                       placeholder="Tutor Name"
-                       class="form-control mx-auto"
-                       style="max-width: 500px;" />
-
-                <input id="desc"
-                       type="text"
-                       placeholder="Description"
-                       class="form-control mx-auto"
-                       style="max-width: 500px;" />
-
+                <input id="courseName" type="text" placeholder="Course" class="form-control mx-auto" style="max-width: 500px;" />
+                <input id="courseTutor" type="text" placeholder="Tutor Name" class="form-control mx-auto" style="max-width: 500px;" />
+                <input id="courseDesc" type="text" placeholder="Description" class="form-control mx-auto" style="max-width: 500px;" />
             </div>
 
-            <!-- SUBMIT BUTTON -->
-            <button class="btn btn-secondary btn-md d-block mx-auto mt-3"
-                    ng-click="addCourse()">
-                Submit
-            </button>
-
+            <button class="btn btn-secondary btn-md d-block mx-auto mt-3" ng-click="addCourse()">Submit</button>
         </div>
 
         <br>

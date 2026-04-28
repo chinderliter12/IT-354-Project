@@ -11,6 +11,43 @@ myApp.controller('handleEvents', ['$scope', '$http', function ($scope, $http) {
     $scope.appointments = [];
     $scope.courses = [];
 
+    //Create new user
+    $scope.addUser = function () {
+        const newUser = {
+            name: document.getElementById("userName").value,
+            username: document.getElementById("userUsername").value,
+            email: document.getElementById("userEmail").value,
+            password: "redbirds123",
+            role: document.getElementById("userRole").value,
+            active: true
+        };
+
+        if (!newUser.name || !newUser.username || !newUser.email || !newUser.role) {
+            return alert("Invalid user information");
+        }
+
+        $http.post(`${API_URL}/users`, newUser)
+            .then(res => {
+                console.log("User created:", res.data);
+
+                document.getElementById("userName").value = "";
+                document.getElementById("userUsername").value = "";
+                document.getElementById("userEmail").value = "";
+                document.getElementById("userRole").value = "";
+
+                $scope.getUsers();
+            })
+            .catch(err => console.error(err));
+    };
+
+    $scope.getUsers = function () {
+        $http.get(`${API_URL}/users`)
+            .then(res => {
+                $scope.users = res.data;
+            })
+            .catch(err => console.error(err));
+    }
+
     // Login user and store JWT + user info
     $scope.loginUser = function () {
 
@@ -31,22 +68,6 @@ myApp.controller('handleEvents', ['$scope', '$http', function ($scope, $http) {
             });
     };
 
-    // Register new user
-    $scope.registerUser = function () {
-
-        $http.post(`${API_URL}/auth/register`, $scope.register)
-            .then(res => {
-
-                alert("Registration successful!");
-                $scope.register = {};
-
-            })
-            .catch(err => {
-                console.error(err);
-                alert(err.data?.message || "Registration failed");
-            });
-    };
-
     // Fetch all courses
     $scope.getCourses = function () {
 
@@ -61,9 +82,9 @@ myApp.controller('handleEvents', ['$scope', '$http', function ($scope, $http) {
     $scope.addCourse = function () {
 
         const newCourse = {
-            name: document.getElementById("name").value,
-            tutor: document.getElementById("tutor").value,
-            description: document.getElementById("desc").value
+            name: document.getElementById("courseName").value,
+            tutor: document.getElementById("courseTutor").value,
+            description: document.getElementById("courseDesc").value
         };
 
         if (!newCourse.name || !newCourse.tutor || !newCourse.description) {
@@ -74,9 +95,9 @@ myApp.controller('handleEvents', ['$scope', '$http', function ($scope, $http) {
             .then(res => {
                 console.log("COURSE CREATED:", res.data);
 
-                document.getElementById("name").value = "";
-                document.getElementById("tutor").value = "";
-                document.getElementById("desc").value = "";
+                document.getElementById("courseName").value = "";
+                document.getElementById("courseTutor").value = "";
+                document.getElementById("courseDesc").value = "";
 
                  $scope.getCourses();
             })
@@ -129,6 +150,7 @@ myApp.controller('handleEvents', ['$scope', '$http', function ($scope, $http) {
     };
 
     // Initial data load
+    $scope.getUsers();
     $scope.getCourses();
     $scope.getAppointments();
 

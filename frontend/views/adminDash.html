@@ -4,24 +4,36 @@
 <head>
     <title>Admin Dashboard</title>
 
-    <link href="../content/css/styles.css" rel="stylesheet">
+    <link href="../assets/css/styles.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="../app/lib/angular.min.js"></script>
     <script src="../app/app.js"></script>
 </head>
 
 <body>
-
     <header ng-include="'../subviews/adminHeader.html'"></header>
 
     <div style="margin: 40px;" ng-controller="handleEvents">
-
         <ul class="list-group">
+            <li class="list-group-item">
+                <h5>Create New User</h5>
+                <div class="container justify-content-center mx-auto" style="max-width: 600px;">
+                    <div class="d-flex flex-column gap-3">
+                        <input id="userName" type="text" placeholder="Name" class="form-control mx-auto" style="max-width: 500px;" />
+                        <input id="userUsername" type="text" placeholder="Username" class="form-control mx-auto" style="max-width: 500px;" />
+                        <input id="userEmail" type="text" placeholder="Email" class="form-control mx-auto" style="max-width: 500px;" />
+                        <select id="userRole" class="form-select" aria-label="User Role Selection">
+                            <option disabled selected>User Role</option>
+                            <option value="student">Student</option>
+                            <option value="tutor">Tutor</option>
+                        </select>
+                    </div>
 
-            <!-- USERS SECTION -->
+                    <button class="btn btn-secondary btn-md d-block mx-auto mt-3" ng-click="addUser()">Submit</button>
+                </div>
+            </li>
             <li class="list-group-item">
                 <h5>Users (Students & Tutors)</h5>
-
                 <table class="table">
                     <thead>
                         <tr>
@@ -31,7 +43,6 @@
                             <th>Active</th>
                         </tr>
                     </thead>
-
                     <tbody>
                         <tr ng-repeat="user in users">
                             <td>{{user.role}}</td>
@@ -44,83 +55,8 @@
                     </tbody>
                 </table>
             </li>
-
-            <!-- TUTOR SCHEDULING -->
-            <li class="list-group-item">
-                <h5>Assign Tutor Hours</h5>
-
-                <select class="form-select" style="width: 250px;"
-                        ng-model="selectedTutor"
-                        ng-options="t.name for t in tutors">
-                    <option value="">Select a tutor</option>
-                </select>
-
-                <br>
-
-                <label>Date:</label>
-                <input type="date" class="form-control" ng-model="schedule.date">
-
-                <label>Start Time:</label>
-                <input type="time" class="form-control" ng-model="schedule.startTime">
-
-                <label>End Time:</label>
-                <input type="time" class="form-control" ng-model="schedule.endTime">
-
-                <br>
-
-                <button class="btn btn-primary">
-                    Save Schedule
-                </button>
-            </li>
-
-            <!-- GLOBAL HOURS -->
-            <li class="list-group-item">
-                <h5>Change Hours for All Tutors</h5>
-
-                <label>Date:</label>
-                <input type="date" class="form-control">
-
-                <label>Start Time:</label>
-                <input type="time" class="form-control">
-
-                <label>End Time:</label>
-                <input type="time" class="form-control">
-
-                <br>
-
-                <button class="btn btn-warning">
-                    Apply to All
-                </button>
-            </li>
-
-            <!-- BOOKINGS -->
-            <li class="list-group-item">
-                <h5>All Bookings</h5>
-
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>Student</th>
-                            <th>Tutor</th>
-                            <th>Date</th>
-                            <th>Time</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        <tr ng-repeat="b in bookings">
-                            <td>{{b.studentId}}</td>
-                            <td>{{b.tutorId}}</td>
-                            <td>{{b.date}}</td>
-                            <td>{{b.startTime}} - {{b.endTime}}</td>
-                        </tr>
-                    </tbody>
-                </table>
-
-            </li>
-
         </ul>
     </div>
-
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
