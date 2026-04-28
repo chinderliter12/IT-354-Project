@@ -11,7 +11,25 @@ myApp.controller('handleEvents', ['$scope', '$http', function ($scope, $http) {
     $scope.appointments = [];
     $scope.courses = [];
 
-    // Login user and store JWT + user info
+    // ADD: tutor availability storage (NEW)
+    $scope.availability = [];
+
+    // ADD: load saved token (FIX)
+    const savedToken = localStorage.getItem("token");
+    if (savedToken) {
+        $http.defaults.headers.common.Authorization = `Bearer ${savedToken}`;
+    }
+
+    // DATE LIMIT 
+    let today = new Date();
+    $scope.today = today.toISOString().split("T")[0];
+
+    let max = new Date();
+    max.setDate(max.getDate() + 21);
+    $scope.maxDate = max.toISOString().split("T")[0];
+
+
+    // LOGIN USER
     $scope.loginUser = function () {
 
         $http.post(`${API_URL}/auth/login`, $scope.loginData)
@@ -21,8 +39,24 @@ myApp.controller('handleEvents', ['$scope', '$http', function ($scope, $http) {
                 localStorage.setItem("userId", res.data.user.id);
                 localStorage.setItem("role", res.data.user.role);
                 localStorage.setItem("name", res.data.user.name);
+
+                $http.defaults.headers.common.Authorization =
+                    `Bearer ${res.data.token}`;
+
                 alert("Login successful!");
-                $scope.getAppointments();
+
+                // ✅ FIX: role-based redirect (ADDED)
+                const role = res.data.user.role;
+
+                if (role === "admin") {
+                    window.location.href = "/views/adminDash.html";
+                }
+                else if (role === "tutor") {
+                    window.location.href = "/views/tutorDashboard.html";
+                }
+                else {
+                    window.location.href = "/views/hours.html";
+                }
 
             })
             .catch(err => {
@@ -31,7 +65,8 @@ myApp.controller('handleEvents', ['$scope', '$http', function ($scope, $http) {
             });
     };
 
-    // Register new user
+
+    // REGISTER USER
     $scope.registerUser = function () {
 
         $http.post(`${API_URL}/auth/register`, $scope.register)
@@ -47,7 +82,8 @@ myApp.controller('handleEvents', ['$scope', '$http', function ($scope, $http) {
             });
     };
 
-    // Fetch all courses
+
+    // GET COURSES
     $scope.getCourses = function () {
 
         $http.get(`${API_URL}/courses`)
@@ -57,7 +93,8 @@ myApp.controller('handleEvents', ['$scope', '$http', function ($scope, $http) {
             .catch(err => console.error(err));
     };
 
-    // Add New Course
+
+    // ADD COURSE
     $scope.addCourse = function () {
 
         const newCourse = {
@@ -72,22 +109,23 @@ myApp.controller('handleEvents', ['$scope', '$http', function ($scope, $http) {
 
         $http.post(`${API_URL}/courses`, newCourse)
             .then(res => {
-                console.log("COURSE CREATED:", res.data);
 
                 document.getElementById("name").value = "";
                 document.getElementById("tutor").value = "";
                 document.getElementById("desc").value = "";
 
-                 $scope.getCourses();
+                $scope.getCourses();
             })
             .catch(err => console.error(err));
     };
 
-    // Get logged-in user's appointments
+
+    // GET APPOINTMENTS
     $scope.getAppointments = function () {
 
         const token = localStorage.getItem("token");
         if (!token) return;
+
         $http.get(`${API_URL}/appointments/my`, {
             headers: {
                 Authorization: `Bearer ${token}`
@@ -101,7 +139,8 @@ myApp.controller('handleEvents', ['$scope', '$http', function ($scope, $http) {
         });
     };
 
-    // Cancel an appointment
+
+    // CANCEL APPOINTMENT
     $scope.cancelAppointment = function (id) {
 
         const token = localStorage.getItem("token");
@@ -116,11 +155,8 @@ myApp.controller('handleEvents', ['$scope', '$http', function ($scope, $http) {
             }
         })
         .then(res => {
-
             alert("Appointment cancelled");
-
             $scope.getAppointments();
-
         })
         .catch(err => {
             console.error(err);
@@ -128,15 +164,58 @@ myApp.controller('handleEvents', ['$scope', '$http', function ($scope, $http) {
         });
     };
 
-    // Initial data load
+
+    // BOOK APPOINTMENT
+    $scope.bookAppointment = function () {
+
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+            return alert("You must be logged in");
+        }
+
+        // ADDED: session safety check
+        if (!$scope.appointment.slot) {
+            return alert("Please select a time slot");
+        }
+
+        let times = $scope.appointment.slot.split("-");
+
+        if (!times || times.length !== 2) {
+            return alert("Please select a valid time slot");
+        }
+
+        let data = {
+            tutor: $scope.appointment.tutorId,
+            date: $scope.appointment.date,
+            course: $scope.appointment.course || "IT179",
+            startTime: times[0],
+            endTime: times[1]
+        };
+
+        $http.post(`${API_URL}/appointments`, data, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+        .then(res => {
+            alert("Appointment booked!");
+            $scope.getAppointments();
+        })
+        .catch(err => {
+            alert(err.data?.message || "Booking failed");
+        });
+    };
+
+
+    // SLOT FILTER HELPER
+    $scope.isSlotAvailable = function(slot, bookedSlots) {
+        return !bookedSlots.includes(slot);
+    };
+
+
+    // INIT
     $scope.getCourses();
     $scope.getAppointments();
 
 }]);
-
-myApp.controller('dateHandler', function($scope) {
-    const currentDate = new Date()
-    const endingDate = new Date();
-
-    console.log(currentDate.getDate());
-});
