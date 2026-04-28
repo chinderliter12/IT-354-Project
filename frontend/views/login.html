@@ -12,24 +12,29 @@
 <body class="text-center" ng-controller="handleEvents">
     <!-- Header -->
     <header ng-include="'../subviews/guestHeader.html'"></header>
+
     <div class="d-flex justify-content-center align-items-center">
         <div class="main-container" style="min-width: 500px; border: 2px solid gray; border-radius: 8px; padding: 40px;">
             <form ng-submit="loginUser()" novalidate>
 
                 <h4>Login</h4><br>
+
                 <div class="mb-3">
                     <label>Email:</label>
                     <input type="email" class="form-control" ng-model="loginData.email" required>
                 </div>
+
                 <div class="mb-3">
                     <label>Password:</label>
                     <input type="password" class="form-control" ng-model="loginData.password" required>
                 </div>
+
                 <button type="submit" class="btn btn-secondary w-100">
                     Sign In
                 </button>
             </form>
         </div>
     </div>
+
 </body>
 </html>

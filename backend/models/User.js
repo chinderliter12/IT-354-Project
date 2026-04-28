@@ -16,7 +16,19 @@ const UserSchema = new mongoose.Schema(
     active: {
       type: Boolean,
       default: true
-    }
+    },
+
+    availability: [
+      {
+        day: String,
+        slots: [
+          {
+            start: String,
+            end: String
+          }
+        ]
+      }
+    ]
   },
   { timestamps: true }
 );
