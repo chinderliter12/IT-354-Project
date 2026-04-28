@@ -133,3 +133,10 @@ myApp.controller('handleEvents', ['$scope', '$http', function ($scope, $http) {
     $scope.getAppointments();
 
 }]);
+
+myApp.controller('dateHandler', function($scope) {
+    const currentDate = new Date()
+    const endingDate = new Date();
+
+    console.log(currentDate.getDate());
+});
