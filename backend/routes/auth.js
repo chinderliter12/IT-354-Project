@@ -5,10 +5,11 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
+const AuditLog = require('../models/AuditLog.js');
+const Notification = require('../models/Notification');
 
 
-// REGISTER 
-
+// register user
 router.post('/register', async (req, res) => {
   try {
 
@@ -28,7 +29,6 @@ router.post('/register', async (req, res) => {
       return res.status(400).json({ message: "User already exists" });
     }
 
-    // HASH PASSWORD 
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const user = new User({
@@ -60,9 +60,7 @@ router.post('/register', async (req, res) => {
 });
 
 
-
-// LOGIN
-
+// login
 router.post('/login', async (req, res) => {
   try {
 
@@ -76,20 +74,53 @@ router.post('/login', async (req, res) => {
 
     const user = await User.findOne({ email });
 
+    // user not found
     if (!user) {
+
+      await AuditLog.create({
+        email,
+        action: "LOGIN_FAILED",
+        ipAddress: req.ip,
+        userAgent: req.headers["user-agent"],
+        metadata: { reason: "USER_NOT_FOUND" }
+      });
+
       return res.status(400).json({ message: "User not found" });
     }
 
+    // account disabled
     if (!user.active) {
+
+      await AuditLog.create({
+        userId: user._id,
+        email,
+        action: "LOGIN_FAILED",
+        ipAddress: req.ip,
+        userAgent: req.headers["user-agent"],
+        metadata: { reason: "ACCOUNT_DISABLED" }
+      });
+
       return res.status(403).json({ message: "Account is deactivated" });
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
 
+    // invalid password
     if (!isMatch) {
+
+      await AuditLog.create({
+        userId: user._id,
+        email,
+        action: "LOGIN_FAILED",
+        ipAddress: req.ip,
+        userAgent: req.headers["user-agent"],
+        metadata: { reason: "INVALID_PASSWORD" }
+      });
+
       return res.status(400).json({ message: "Invalid password" });
     }
 
+    // successful login
     const token = jwt.sign(
       {
         id: user._id,
@@ -100,6 +131,22 @@ router.post('/login', async (req, res) => {
       process.env.JWT_SECRET || "devsecret123",
       { expiresIn: "2h" }
     );
+
+    // audit log for successful login
+    await AuditLog.create({
+      userId: user._id,
+      email: user.email,
+      action: "LOGIN_SUCCESS",
+      ipAddress: req.ip,
+      userAgent: req.headers["user-agent"]
+    });
+
+    // notification for login
+    await Notification.create({
+      userId: user._id,
+      type: "SYSTEM",
+      message: "You have successfully logged in."
+    });
 
     res.json({
       token,
@@ -119,8 +166,7 @@ router.post('/login', async (req, res) => {
 });
 
 
-// GET TUTORS (ADMIN DROPDOWN)
-
+// get active tutors
 router.get('/tutors', async (req, res) => {
   try {
 

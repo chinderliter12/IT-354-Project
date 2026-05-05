@@ -4,7 +4,7 @@ myApp.controller('handleEvents', ['$scope', '$http', function ($scope, $http) {
 
     const API_URL = "http://localhost:5001/api";
 
-    // DATA MODELS
+    // Data Models
     $scope.loginData = {};
     $scope.register = {};
     $scope.appointment = {};
@@ -139,7 +139,8 @@ myApp.controller('handleEvents', ['$scope', '$http', function ($scope, $http) {
     // Booking
     $scope.setBooking = function(course) {
 
-        $scope.appointment.tutorId = course.tutor;
+        // FIX: use tutorId instead of tutor name
+        $scope.appointment.tutorId = course.tutorId;
 
         console.log("COURSE:", course);
         console.log("APPOINTMENT:", $scope.appointment);
@@ -158,6 +159,11 @@ myApp.controller('handleEvents', ['$scope', '$http', function ($scope, $http) {
 
         if (!$scope.appointment.date || !$scope.appointment.slot) {
             alert("Select date and time slot");
+            return;
+        }
+
+        if (!$scope.appointment.tutorId) {
+            alert("Tutor ID missing");
             return;
         }
 
