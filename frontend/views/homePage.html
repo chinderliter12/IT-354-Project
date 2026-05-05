@@ -1,3 +1,6 @@
+
+<!-- Page that is used to give the user general information and links -->
+
 <!DOCTYPE html>
 <html lang="en" ng-app="myBigApp" ng-controller="handleEvents">
     <head>
@@ -13,7 +16,8 @@
         <div class="main-container">
             <h4 style="margin: 40px;">Home Page</h4>
 
-            <!-- Search Section -->
+            <!-- Should we just remove the search bar on the home page? -->
+            <!-- We could link it to hours.html, but I'm not sure it does much for us -->
             <div class="container justify-content-center px-4" style="margin: 100px" ng-if="userRole!='guest'">
                 Welcome, {{ logName }}
             </div>

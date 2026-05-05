@@ -1,29 +1,26 @@
+
+<!-- Header bar that is displayed when the user is logged in as a student -->
+
 <div class="bg-body-tertiary">
     <div class="container">
         <div class="py-4 text-center">
             <nav class="bg-body-tertiary">
                 <div class="container d-flex flex-wrap">
-
                     <ul class="nav me-auto">
                         <li class="nav-item">
                             <a href="homePage.html" class="nav-link link-body-emphasis px-2">Home</a>
                         </li>
-
                         <li class="nav-item">
-                            <a href="hours.html" class="nav-link link-body-emphasis px-2">Make An Appointment</a>
+                            <a href="booking.html" class="nav-link link-body-emphasis px-2">Make An Appointment</a>
                         </li>
-
                         <li class="nav-item">
-                            <a href="sessions.html" class="nav-link link-body-emphasis px-2">My Appointments</a>
+                            <a href="studentDash.html" class="nav-link link-body-emphasis px-2">Student Dashboard</a>
                         </li>
                     </ul>
 
                     <ul class="nav">
                     <li class = "nav-item">
-                        <li class="nav-item" ng-if="!isLoggedIn">
-                            <a href="login.html" class="nav-link link-body-emphasis px-2">Login</a>
-                        </li>
-                        <li class="nav-item" ng-if="isLoggedIn">
+                        <li class="nav-item">
                             <a href="#" class="nav-link link-body-emphasis px-2" ng-click="logoutUser()">Logout</a>
                         </li>
                     </li>

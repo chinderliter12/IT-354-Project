@@ -45,7 +45,7 @@ myApp.controller('handleEvents', ['$scope', '$http', function ($scope, $http) {
         if(role == 'admin') {
             $scope.headerString = '../subviews/adminHeader.html';
         } else if (role== 'tutor') {
-            $scope.headerString = '../subviews/studentHeader.html';
+            $scope.headerString = '../subviews/tutorHeader.html';
         } else if (role == 'student') {
             $scope.headerString = '../subviews/studentHeader.html';
         } else {
