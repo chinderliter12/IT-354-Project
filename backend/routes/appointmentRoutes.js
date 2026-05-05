@@ -5,9 +5,7 @@ const Appointment = require('../models/Appointment');
 const auth = require('../middleware/auth');
 const roleAuth = require('../middleware/roleAuth');
 
-
-// Create appointment
-router.post('/', auth, async (req, res) => {
+router.post('/', auth, roleAuth(["student"]), async (req, res) => {
   try {
 
     const { tutor, course, startTime, endTime, date } = req.body;
@@ -62,8 +60,6 @@ router.post('/', auth, async (req, res) => {
   }
 });
 
-
-// Get student appointments
 router.get('/my', auth, async (req, res) => {
   try {
 
@@ -78,8 +74,20 @@ router.get('/my', auth, async (req, res) => {
   }
 });
 
+router.get('/tutor', auth, roleAuth(["tutor"]), async (req, res) => {
+  try {
 
-// Cancel appointment
+    const appointments = await Appointment.find({
+      tutor: req.user.name
+    });
+
+    res.json(appointments);
+
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 router.put('/cancel/:id', auth, async (req, res) => {
   try {
 
@@ -104,24 +112,6 @@ router.put('/cancel/:id', auth, async (req, res) => {
   }
 });
 
-
-// Get tutor appointments (string-based)
-router.get('/tutor', auth, roleAuth(["tutor"]), async (req, res) => {
-  try {
-
-    const appointments = await Appointment.find({
-      tutor: req.user.name
-    });
-
-    res.json(appointments);
-
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
-
-
-// Add comment
 router.put('/comment/:id', auth, roleAuth(["tutor"]), async (req, res) => {
   try {
 
@@ -148,8 +138,6 @@ router.put('/comment/:id', auth, roleAuth(["tutor"]), async (req, res) => {
   }
 });
 
-
-// Mark no-show
 router.put('/no-show/:id', auth, roleAuth(["tutor"]), async (req, res) => {
   try {
 

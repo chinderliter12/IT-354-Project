@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const Booking = require('../models/booking');
+const Booking = require('../models/Booking');
 const auth = require('../middleware/auth');
 const role = require('../middleware/role');
 
@@ -27,7 +27,6 @@ router.post('/', auth, role(["student"]), async (req, res) => {
       description: description || ""
     });
 
-    // create notification
     await Notification.create({
       userId: req.user.id,
       type: "BOOKING",
@@ -35,7 +34,6 @@ router.post('/', auth, role(["student"]), async (req, res) => {
       relatedId: booking._id
     });
 
-    // create audit log entry
     await AuditLog.create({
       userId: req.user.id,
       email: req.user.email,
@@ -59,6 +57,23 @@ router.post('/', auth, role(["student"]), async (req, res) => {
   } catch (err) {
     console.error("BOOKING ERROR:", err);
     return res.status(500).json({ message: err.message });
+  }
+});
+
+router.get('/my', auth, async (req, res) => {
+  try {
+
+    const bookings = await Booking.find({
+      studentId: req.user.id
+    })
+    .populate('tutorId', 'name email')
+    .sort({ createdAt: -1 });
+
+    res.json(bookings);
+
+  } catch (err) {
+    console.error("GET MY BOOKINGS ERROR:", err);
+    res.status(500).json({ message: err.message });
   }
 });
 

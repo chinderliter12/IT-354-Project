@@ -34,15 +34,15 @@
                     <tbody>
                         <tr ng-repeat="a in appointments">
 
-                            <td>IT 179</td>
+                            <td>{{ a.course }}</td>
 
-                            <td>{{ a.tutorId.name }}</td>
+                            <td>{{ a.tutor }}</td>
 
                             <td>{{ a.startTime }}</td>
 
                             <td>{{ a.endTime }}</td>
 
-                            <td>{{ a.status || 'active' }}</td>
+                            <td>{{ a.status }}</td>
 
                             <td>
                                 <button class="btn btn-danger btn-sm"
