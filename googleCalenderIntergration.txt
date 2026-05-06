@@ -1,0 +1,51 @@
+Google Calendar API Integration 
+
+This project integrates the Google Calendar API to automatically create
+calendar events whenever a tutoring appointment is booked in the system.
+
+1.  Authentication Setup The application uses OAuth 2.0 to authenticate
+    with Google services. A Google Cloud project is created and
+    configured with:
+
+-   Client ID
+-   Client Secret
+-   Redirect URI
+
+A refresh token is generated through Google’s OAuth Playground and
+stored securely in the backend .env file. This allows the server to
+access Google Calendar without requiring repeated user logins.
+
+2.  OAuth Client Initialization In the backend (googleCalendar.js), the
+    Google APIs client library is used:
+
+-   An OAuth2 client is created using credentials from environment
+    variables.
+-   The refresh token is assigned to the client.
+-   This allows automatic generation of access tokens when needed.
+
+3.  Calendar Event Creation When a student books an appointment:
+
+-   Appointment details (course, date, start time, end time, student,
+    tutor) are sent to the backend.
+-   A function creates a Google Calendar event object.
+-   The event includes:
+    -   Title (course name)
+    -   Start and end time 
+    -   Attendees (student and tutor emails)
+
+4.  API Request The event is inserted into Google Calendar using:
+    calendar.events.insert({ calendarId: ‘primary’, resource: event })
+
+This adds the appointment directly into the connected Google Calendar.
+
+5.  Error Handling Common issues include:
+
+-   invalid_grant → expired or revoked refresh token
+-   redirect_uri_mismatch → incorrect OAuth configuration
+-   access_denied → user not added as test user
+
+6.  Result Once configured correctly:
+
+-   Every booked appointment is stored in MongoDB
+-   A Google Calendar event is created automatically
+-   Email notifications are sent to both student and tutor

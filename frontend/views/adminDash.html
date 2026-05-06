@@ -87,7 +87,73 @@
 
         <!-- Tutor menu-->
         <ul class="list-group mx-auto" ng-if="menuSelection == 'tutor'" style="max-width: 1200px;">
-            <li>There is nothing to display.</li>
+            <li class="list-group-item">
+                <h5>Assign tutor hours</h5>
+
+                <div class="container justify-content-center mx-auto" style="max-width: 600px;">
+                    <div class="d-flex flex-column gap-3">
+
+                        <!-- tutor select -->
+                        <select class="form-select" ng-model="selectedTutorAvailability.tutorId">
+                            <option disabled selected>select tutor</option>
+                            <option ng-repeat="user in users" ng-if="user.role === 'tutor'" value="{{user._id}}">
+                                {{user.name}}
+                            </option>
+                        </select>
+
+                        <!-- day select -->
+                        <select class="form-select" ng-model="selectedTutorAvailability.day">
+                            <option disabled selected>select day</option>
+                            <option>monday</option>
+                            <option>tuesday</option>
+                            <option>wednesday</option>
+                            <option>thursday</option>
+                            <option>friday</option>
+                            <option>saturday</option>
+                            <option>sunday</option>
+                        </select>
+
+                        <!-- time inputs -->
+                        <input type="time" class="form-control" ng-model="selectedTutorAvailability.startTime">
+                        <input type="time" class="form-control" ng-model="selectedTutorAvailability.endTime">
+                    </div>
+
+                    <button class="btn btn-dark mt-3 d-block mx-auto" ng-click="assignTutorHours()">
+                        assign hours
+                    </button>
+                </div>
+            </li>
+
+            <!-- view all availability -->
+            <li class="list-group-item">
+                <h5>all tutor schedules</h5>
+
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>tutor</th>
+                            <th>day</th>
+                            <th>start</th>
+                            <th>end</th>
+                            <th>action</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr ng-repeat="a in tutorAvailability">
+                            <td>{{a.tutor.name}}</td>
+                            <td>{{a.day}}</td>
+                            <td>{{a.startTime}}</td>
+                            <td>{{a.endTime}}</td>
+                            <td>
+                                <button class="btn btn-danger btn-sm" ng-click="deleteAvailability(a._id)">
+                                    delete
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </li>
         </ul>
 
         <!-- Course menu-->
@@ -98,9 +164,9 @@
                     <div class="d-flex flex-column gap-3">
                         <input type="text" ng-model="newCourse.name" placeholder="Course Name" class="form-control mx-auto" style="max-width: 500px;" />
                         <input type="text" ng-model="newCourse.description" placeholder="Description" class="form-control mx-auto" style="max-width: 500px;" />
-                        <select ng-model="newCourse.tutor" class="form-select">
+                        <select ng-model="newCourse.tutor" class="form-select" style="max-width: 500px;">
                             <option disabled selected value="">Select Tutor</option>
-                            <option ng-repeat="user in users" ng-if="user.role === 'tutor' && user.active == true" value="{{user._id}}" style="max-width: 500px;">
+                            <option ng-repeat="user in users" ng-if="user.role === 'tutor' && user.active == true" value="{{user._id}}">
                                 {{user.name}}
                             </option>
                         </select>

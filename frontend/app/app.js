@@ -8,6 +8,8 @@ myApp.controller('adminFunctions', ['$scope', '$http', function ($scope, $http) 
     $scope.menuSelection = 'student';
     $scope.newCourse = {};
     $scope.users = [];
+    $scope.tutorAvailability = [];
+    $scope.selectedTutorAvailability = {};
     
     $scope.adminDisplay = function(displayChoice) {
         $scope.menuSelection = displayChoice;
@@ -94,8 +96,58 @@ myApp.controller('adminFunctions', ['$scope', '$http', function ($scope, $http) 
             .catch(err => console.error(err));
     };
 
+    $scope.getAllAvailability = function () {
+        const token = localStorage.getItem("token");
+
+        $http.get(`${API_URL}/admin/availability`, {
+            headers: { Authorization: `Bearer ${token}` }
+        })
+        .then(res => {
+            $scope.tutorAvailability = res.data;
+        })
+        .catch(err => console.error("GET AVAILABILITY ERROR:", err));
+    };
+
+    $scope.assignTutorHours = function () {
+
+        const token = localStorage.getItem("token");
+
+        const data = {
+            tutorId: $scope.selectedTutorAvailability.tutorId,
+            day: $scope.selectedTutorAvailability.day,
+            startTime: $scope.selectedTutorAvailability.startTime,
+            endTime: $scope.selectedTutorAvailability.endTime
+        };
+
+        $http.post(`${API_URL}/admin/availability`, data, {
+            headers: { Authorization: `Bearer ${token}` }
+        })
+        .then(res => {
+            alert("tutor hours assigned!");
+            $scope.getAllAvailability();
+        })
+        .catch(err => {
+            console.error(err);
+            alert(err.data?.message || "failed to assign hours");
+        });
+    };
+
+    $scope.deleteAvailability = function(id) {
+
+        const token = localStorage.getItem("token");
+
+        $http.delete(`${API_URL}/admin/availability/${id}`, {
+            headers: { Authorization: `Bearer ${token}` }
+        })
+        .then(() => {
+            $scope.getAllAvailability();
+        })
+        .catch(err => console.error(err));
+    };
+
     $scope.getUsers();
     $scope.getCourses();
+    $scope.getAllAvailability();
 }])
 
 myApp.controller('loginFunctions', ['$scope', '$http', function ($scope, $http) {
