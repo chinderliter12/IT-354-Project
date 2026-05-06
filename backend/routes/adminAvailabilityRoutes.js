@@ -8,7 +8,7 @@ const roleAuth = require('../middleware/roleAuth');
 const User = require('../models/User');
 
 
-// GET ALL (ADMIN)
+// Get All
 router.get('/', auth, roleAuth(["admin"]), async (req, res) => {
   try {
     const data = await Availability.find()
@@ -23,7 +23,7 @@ router.get('/', auth, roleAuth(["admin"]), async (req, res) => {
 });
 
 
-// CREATE (ADMIN) - FIXED TIME HANDLING
+// Create Admin
 router.post('/', auth, roleAuth(["admin"]), async (req, res) => {
   try {
 
@@ -62,7 +62,7 @@ router.post('/', auth, roleAuth(["admin"]), async (req, res) => {
 });
 
 
-// DELETE (ADMIN)
+// Delete 
 router.delete('/:id', auth, roleAuth(["admin"]), async (req, res) => {
   try {
 
