@@ -207,6 +207,43 @@
             </li>
         </ul>
 
+        <!-- Appointments Menu -->
+        <ul class="list-group mx-auto" ng-if="menuSelection == 'appointments'" style="max-width: 1200px;">
+            <li class="list-group-item">
+            <h5>All Appointments</h5>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Student Name</th>
+                            <th>Tutor Name</th>
+                            <th>Course</th>
+                            <th>Date</th>
+                            <th>Time</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr ng-repeat="appointment in appointments">
+                            <td>{{appointment.student.name}}</td>
+                            <td>{{appointment.tutor.name}}</td>
+                            <td>{{appointment.course}}</td>
+                            <td>{{appointment.date}}</td>
+                            <td>{{appointment.startTime}} - {{appointment.endTime}}</td>
+                            <td>{{appointment.status}}</td>
+                            <td>
+                                <button class="btn btn-danger btn-sm" ng-click="cancelAppointment(appointment._id)" ng-if="appointment.status != 'cancelled'">
+                                    Cancel
+                                </button>
+                                <span ng-if="appointment.status == 'cancelled'" class="text-muted">Cancelled</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </li>
+        </ul>
+
         <!-- Logs menu -->
         <ul class="list-group mx-auto" ng-if="menuSelection == 'logs'" style="max-width: 1200px;">
             <li class="list-group-item">

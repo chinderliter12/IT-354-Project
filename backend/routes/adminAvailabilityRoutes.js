@@ -11,29 +11,31 @@ const availabilitySchema = new mongoose.Schema({
     type: String,
     required: true,
     enum: [
-      "Monday",
-      "Tuesday",
-      "Wednesday",
-      "Thursday",
-      "Friday",
-      "Saturday",
-      "Sunday"
+      "monday",
+      "tuesday",
+      "wednesday",
+      "thursday",
+      "friday",
+      "saturday",
+      "sunday"
     ]
   },
 
   startTime: {
-    type: String, // "09:00"
-    required: true
+    type: String,
+    required: true,
+    trim: true
   },
 
   endTime: {
-    type: String, // "12:00"
-    required: true
+    type: String,
+    required: true,
+    trim: true
   },
 
   createdBy: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User' // admin
+    ref: 'User'
   },
 
   createdAt: {

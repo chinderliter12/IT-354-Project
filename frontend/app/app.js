@@ -10,6 +10,7 @@ myApp.controller('adminFunctions', ['$scope', '$http', function ($scope, $http) 
     $scope.courses = [];
     $scope.newCourse = {};
     $scope.users = [];
+    $scope.appointments = [];
 
     $scope.tutorAvailability = [];
     $scope.selectedTutorAvailability = {};
@@ -182,9 +183,33 @@ myApp.controller('adminFunctions', ['$scope', '$http', function ($scope, $http) 
         .catch(err => console.error(err));
     };
 
+    $scope.getAllAppointments = function() {
+        const token = localStorage.getItem("token");
+
+        $http.get(`${API_URL}/appointments/admin/all`, {
+            headers: { Authorization: `Bearer ${token}` }
+        })
+        .then(res => $scope.appointments = res.data)
+        .catch(err => console.error(err));
+    }
+
+    $scope.cancelAppointment = function(id) {
+        const token = localStorage.getItem("token");
+
+        $http.put(`${API_URL}/appointments/cancel/${id}`, {}, {
+            headers: { Authorization: `Bearer ${token}` }
+        })
+        .then(() => {
+            $scope.logAction("Successfully cancelled appointment", id);
+            $scope.getAllAppointments();
+        })
+        .catch(err => console.error(err));
+    }
+
     $scope.getUsers();
     $scope.getCourses();
     $scope.getAllAvailability();
+    $scope.getAllAppointments();
 }]);
 
 myApp.controller('loginFunctions', ['$scope', '$http', function ($scope, $http) {
@@ -253,6 +278,14 @@ myApp.controller('handleEvents', ['$scope', '$http', function ($scope, $http) {
     $scope.tutorAppointments = [];
     $scope.isBooking = false;
 
+    $scope.slots = [
+        { label: "9:00 - 10:00", value: "9:00-10:00" },
+        { label: "10:00 - 11:00", value: "10:00-11:00" },
+        { label: "11:00 - 12:00", value: "11:00-12:00" },
+        { label: "1:00 - 2:00", value: "1:00-2:00" },
+        { label: "2:00 - 3:00", value: "2:00-3:00" }
+    ];
+
     const savedToken = localStorage.getItem("token");
 
     if (savedToken) {
@@ -291,9 +324,14 @@ myApp.controller('studentFunctions', ['$scope', '$http', function ($scope, $http
 
         if ($scope.isBooking) return;
 
-        $scope.isBooking = true;
-
         const token = localStorage.getItem("token");
+
+        if (!$scope.appointment.slot || !$scope.appointment.date) {
+            alert("select date and time");
+            return;
+        }
+
+        $scope.isBooking = true;
 
         let times = $scope.appointment.slot.split("-");
 

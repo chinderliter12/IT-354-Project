@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const User = require('./backend/models/User');
 require('dotenv').config();
 
-mongoose.connect(process.env.MONGODB_URI)
+mongoose.connect(process.env.MONGO_URI)
     .then(async () => {
         console.log('MongoDB connected');
         

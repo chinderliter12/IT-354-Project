@@ -54,7 +54,7 @@ router.post('/', auth, roleAuth(['student']), async (req, res) => {
     const student = await User.findById(req.user.id);
     const tutorUser = await User.findById(tutor);
 
-    // google calendar event (safe call)
+    // google calendar event
     await createCalendarEvent({
       course,
       date,
