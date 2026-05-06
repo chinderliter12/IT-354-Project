@@ -1,75 +1,54 @@
 const { google } = require('googleapis');
 
+// oauth client setup
 const oAuth2Client = new google.auth.OAuth2(
   process.env.GOOGLE_CLIENT_ID,
   process.env.GOOGLE_CLIENT_SECRET,
   process.env.GOOGLE_REDIRECT
 );
 
+// refresh token auth
 oAuth2Client.setCredentials({
   refresh_token: process.env.GOOGLE_REFRESH_TOKEN
 });
 
-const calendar = google.calendar({
-  version: 'v3',
-  auth: oAuth2Client
-});
+const calendar = google.calendar({ version: 'v3', auth: oAuth2Client });
 
+// convert date + time → valid ISO string
+function toDateTime(date, time) {
+  const [hour, minute] = time.split(':');
 
-function formatTime(time) {
-  let [hour, minute] = time.split(":");
+  const d = new Date(date);
+  d.setHours(Number(hour), Number(minute), 0, 0);
 
-  hour = hour.padStart(2, "0"); // 9 -> 09
-
-  return `${hour}:${minute}:00`;
+  return d.toISOString();
 }
 
-async function createCalendarEvent({
-  course,
-  date,
-  startTime,
-  endTime,
-  studentEmail,
-  tutorEmail
-}) {
-  try {
+// create calendar event
+async function createCalendarEvent({ course, date, startTime, endTime, studentEmail, tutorEmail }) {
+  const event = {
+    summary: `Tutoring: ${course}`,
+    description: 'tutoring session',
+    start: {
+      dateTime: toDateTime(date, startTime),
+      timeZone: 'America/Chicago'
+    },
+    end: {
+      dateTime: toDateTime(date, endTime),
+      timeZone: 'America/Chicago'
+    },
+    attendees: [
+      { email: studentEmail },
+      { email: tutorEmail }
+    ]
+  };
 
-    const startDateTime = new Date(`${date}T${formatTime(startTime)}`);
-    const endDateTime = new Date(`${date}T${formatTime(endTime)}`);
-
-    if (isNaN(startDateTime) || isNaN(endDateTime)) {
-      throw new Error("Invalid date/time format");
-    }
-
-    const event = {
-      summary: `Tutoring: ${course}`,
-      description: "Tutoring session",
-      start: {
-        dateTime: startDateTime.toISOString(),
-        timeZone: 'America/Chicago'
-      },
-      end: {
-        dateTime: endDateTime.toISOString(),
-        timeZone: 'America/Chicago'
-      },
-      attendees: [
-        { email: studentEmail },
-        { email: tutorEmail }
-      ]
-    };
-
-    const result = await calendar.events.insert({
-      calendarId: 'primary',
-      resource: event
-    });
-
-    console.log(" Calendar event created");
-
-    return result;
-
-  } catch (err) {
-    console.error(" Google Calendar Error:", err.message);
-  }
+  return await calendar.events.insert({
+    calendarId: 'primary',
+    resource: event
+  });
 }
 
-module.exports = createCalendarEvent;
+module.exports = {
+  createCalendarEvent
+};
