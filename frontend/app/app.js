@@ -277,6 +277,30 @@ myApp.controller('handleEvents', ['$scope', '$http', function ($scope, $http) {
 
         const token = localStorage.getItem("token");
 
+        if (!$scope.appointment.slot) {
+            alert("please select a time slot");
+            $scope.isBooking = false;
+            return;
+        }
+
+        if (!$scope.appointment.date) {
+            alert("please select a date");
+            $scope.isBooking = false;
+            return;
+        }
+
+        if (!$scope.appointment.tutorName || !$scope.appointment.courseName) {
+            alert("please select a course");
+            $scope.isBooking = false;
+            return;
+        }
+
+        if (!$scope.appointment.slot.includes("-")) {
+            alert("invalid time slot format");
+            $scope.isBooking = false;
+            return;
+        }
+
         let times = $scope.appointment.slot.split("-");
 
         const data = {
