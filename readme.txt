@@ -18,3 +18,17 @@ Once all of this is done, run the command 'npm start,' which will create an inst
 Open a browser, and navigate to localhost:5001.
 
 This will bring you to the home page, and you can navigate the website freely. 
+
+
+Team Members and Roles:
+Cameron Hinderliter - Team Lead
+Cameron was the one primarily in charge of front-end interaction and angularjs code. 
+Cameron handled most of the main pages you can navigate between, and the angularjs functions.
+
+Isaiah Essex
+Isaiah was primarily in charge of backend functionality and database interactions.
+Isaiah handled all of the authorization features, security, and database work.
+Isaiah also handled the external google calendar API.
+
+Although we each had assigned roles and spearheaded development of our own sections, there was a lot of
+overlap in work because the group was so small.
