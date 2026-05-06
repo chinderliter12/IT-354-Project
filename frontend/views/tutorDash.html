@@ -1,6 +1,3 @@
-
-<!-- Page that is used for all tutor-specific operations -->
-
 <!DOCTYPE html>
 <html lang="en" ng-app="myBigApp">
 
@@ -20,10 +17,9 @@
 
     <h2>Tutor Dashboard</h2>
 
-    <!-- Shouldn't we just call this on page load? -->
     <button class="btn btn-primary mb-3"
             ng-click="getTutorAppointments()">
-        Load My Appointments
+        Refresh Appointments
     </button>
 
     <table class="table table-striped">
@@ -31,26 +27,50 @@
         <tr>
             <th>Student</th>
             <th>Course</th>
+            <th>Date</th>
+            <th>Time</th>
             <th>Status</th>
             <th>Comment</th>
             <th>Actions</th>
         </tr>
+
         <tr ng-repeat="a in tutorAppointments">
-            <td>{{a.student.name}}</td>
+
+            <!-- student safe display -->
+            <td>{{a.student.name || a.student.email || a.student}}</td>
+
             <td>{{a.course}}</td>
+
+            <td>{{a.date}}</td>
+
+            <td>{{a.startTime}} - {{a.endTime}}</td>
+
             <td>{{a.status}}</td>
+
             <td>
-                <input type="text" ng-model="a.newComment" class="form-control">
+                <input type="text"
+                       ng-model="a.newComment"
+                       class="form-control">
             </td>
+
             <td>
+
                 <button class="btn btn-success btn-sm"
                         ng-click="addComment(a._id, a.newComment)">
                     Add Comment
                 </button>
+
                 <button class="btn btn-danger btn-sm"
                         ng-click="markNoShow(a._id)">
                     No Show
                 </button>
+
+                <!-- NEW: Tutor Cancel -->
+                <button class="btn btn-warning btn-sm"
+                        ng-click="cancelAsTutor(a._id)">
+                    Cancel
+                </button>
+
             </td>
 
         </tr>
@@ -58,6 +78,19 @@
     </table>
 
 </div>
+
+<script>
+    // auto refresh every 30 seconds
+    setInterval(function () {
+        const scope = angular.element(document.body).scope();
+
+        if (scope && localStorage.getItem("role") === "tutor") {
+            scope.$apply(function () {
+                scope.getTutorAppointments();
+            });
+        }
+    }, 30000);
+</script>
 
 </body>
 </html>

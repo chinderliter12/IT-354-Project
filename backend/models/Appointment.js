@@ -2,7 +2,8 @@ const mongoose = require('mongoose');
 
 const AppointmentSchema = new mongoose.Schema({
   tutor: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
     required: true
   },
   student: {
