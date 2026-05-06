@@ -1,4 +1,3 @@
-
 <!-- Page that is used for all admin-specific operations -->
 
 <!DOCTYPE html>
@@ -16,7 +15,9 @@
     <div ng-controller="loginFunctions">
         <header ng-include="headerString"></header>
     </div>
+
     <div style="margin: 40px;" ng-controller="adminFunctions">
+
         <div class="d-flex justify-content-center" style="margin-bottom: 20px;">
             <button id="studentButton" class="btn btn-md d-block" ng-class="menuSelection == 'student' ? 'btn-danger':'btn-secondary'" ng-click="adminDisplay('student')" style="margin: 20px;">User Menu</button>
             <button id="tutorButton" class="btn btn-md d-block" ng-class="menuSelection == 'tutor' ? 'btn-danger':'btn-secondary'" ng-click="adminDisplay('tutor')" style="margin: 20px;">Tutor Hours Menu</button>
@@ -45,7 +46,6 @@
                 </div>
             </li>
 
-            <!-- List of all users -->
             <li class="list-group-item">
                 <h5>All Users</h5>
                 <div class="container px-4 mx-auto" style="margin: 40px; max-width: 600px;">
@@ -61,7 +61,6 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <!-- Active users are listed first, and sorted by role -->
                         <tr ng-repeat="user in users | orderBy: 'role' | filter:{name:searchString}" ng-if="user.active == true" ng-class="user.active == false ? 'table-secondary':''">
                             <td>{{user.role}}</td>
                             <td>{{user.name}}</td>
@@ -71,7 +70,6 @@
                             </td>
                         </tr>
 
-                        <!-- Inactive users are listed at the bottom, and also sorted by role -->
                         <tr ng-repeat="user in users | orderBy: 'role' | filter:{name:searchString}" ng-if="user.active == false" ng-class="user.active == false ? 'table-secondary':''">
                             <td>{{user.role}}</td>
                             <td>{{user.name}}</td>
@@ -85,7 +83,7 @@
             </li>
         </ul>
 
-        <!-- Tutor menu-->
+        <!-- Tutor menu -->
         <ul class="list-group mx-auto" ng-if="menuSelection == 'tutor'" style="max-width: 1200px;">
             <li class="list-group-item">
                 <h5>Assign tutor hours</h5>
@@ -93,7 +91,6 @@
                 <div class="container justify-content-center mx-auto" style="max-width: 600px;">
                     <div class="d-flex flex-column gap-3">
 
-                        <!-- tutor select -->
                         <select class="form-select" ng-model="selectedTutorAvailability.tutorId">
                             <option disabled selected>select tutor</option>
                             <option ng-repeat="user in users" ng-if="user.role === 'tutor'" value="{{user._id}}">
@@ -101,7 +98,6 @@
                             </option>
                         </select>
 
-                        <!-- day select -->
                         <select class="form-select" ng-model="selectedTutorAvailability.day">
                             <option disabled selected>select day</option>
                             <option>monday</option>
@@ -113,7 +109,6 @@
                             <option>sunday</option>
                         </select>
 
-                        <!-- time inputs -->
                         <input type="time" class="form-control" ng-model="selectedTutorAvailability.startTime">
                         <input type="time" class="form-control" ng-model="selectedTutorAvailability.endTime">
                     </div>
@@ -124,7 +119,6 @@
                 </div>
             </li>
 
-            <!-- view all availability -->
             <li class="list-group-item">
                 <h5>all tutor schedules</h5>
 
@@ -156,7 +150,7 @@
             </li>
         </ul>
 
-        <!-- Course menu-->
+        <!-- Course menu -->
         <ul class="list-group mx-auto" ng-if="menuSelection == 'course'" style="max-width: 1200px;">
             <li class="list-group-item">
                 <h5>Create Course</h5>
@@ -196,16 +190,45 @@
                                         <td>{{ course.description }}</td>
                                     </tr>
                                 </tbody>
-                                </table>
+                            </table>
                         </div>
                     </ul>
                 </div>
+
                 <div ng-if="courses && !courses.length">
                     <p>No course data is available.</p>
                 </div>
             </li>
         </ul>
+
+        <!-- Logs menu -->
+        <ul class="list-group mx-auto" ng-if="menuSelection == 'logs'" style="max-width: 1200px;">
+            <li class="list-group-item">
+                <h5>Audit Logs</h5>
+
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Action</th>
+                            <th>Details</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr ng-repeat="log in logs">
+                            <td>{{log.action}}</td>
+                            <td>{{log.details}}</td>
+                            <td>{{log.createdAt | date:'medium'}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+            </li>
+        </ul>
+
     </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
