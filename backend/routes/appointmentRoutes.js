@@ -6,10 +6,11 @@ const auth = require('../middleware/auth');
 const roleAuth = require('../middleware/roleAuth');
 
 const sendEmail = require('../utils/emailService');
+const createCalendarEvent = require('../utils/googleCalendar'); // make sure export matches this
 const User = require('../models/User');
 
 
-// CREATE APPOINTMENT (student only)
+// create appointment (student only)
 router.post('/', auth, roleAuth(["student"]), async (req, res) => {
   try {
 
@@ -31,7 +32,7 @@ router.post('/', auth, roleAuth(["student"]), async (req, res) => {
       });
     }
 
-    // IMPORTANT: rely on MongoDB uniqueness instead of fragile manual checks
+    // create appointment
     const appointment = new Appointment({
       tutor,
       student: req.user.id,
@@ -44,8 +45,19 @@ router.post('/', auth, roleAuth(["student"]), async (req, res) => {
 
     await appointment.save();
 
+    // get users for email + calendar
     const student = await User.findById(req.user.id);
     const tutorUser = await User.findById(tutor);
+
+    // create google calendar event
+    await createCalendarEvent({
+      course,
+      date,
+      startTime,
+      endTime,
+      studentEmail: student.email,
+      tutorEmail: tutorUser.email
+    });
 
     const message = `
 Appointment Confirmed
@@ -62,7 +74,7 @@ Time: ${startTime} - ${endTime}
 
   } catch (err) {
 
-    // ✅ CLEAN DUPLICATE HANDLING (THIS FIXES YOUR ISSUE)
+    // handle duplicate key error from mongodb
     if (err.code === 11000) {
       return res.status(409).json({
         message: "This time slot is already booked"
@@ -75,7 +87,7 @@ Time: ${startTime} - ${endTime}
 });
 
 
-// STUDENT APPOINTMENTS
+// student appointments
 router.get('/my', auth, async (req, res) => {
   try {
 
@@ -93,7 +105,7 @@ router.get('/my', auth, async (req, res) => {
 });
 
 
-// TUTOR APPOINTMENTS
+// tutor appointments
 router.get('/tutor', auth, roleAuth(["tutor"]), async (req, res) => {
   try {
 
@@ -111,7 +123,7 @@ router.get('/tutor', auth, roleAuth(["tutor"]), async (req, res) => {
 });
 
 
-// CANCEL (student only)
+// cancel appointment (student only)
 router.put('/cancel/:id', auth, async (req, res) => {
   try {
 
@@ -150,7 +162,7 @@ Time: ${appointment.startTime} - ${appointment.endTime}
 });
 
 
-// TUTOR COMMENT
+// tutor comment
 router.put('/comment/:id', auth, roleAuth(["tutor"]), async (req, res) => {
   try {
 
@@ -188,7 +200,7 @@ Comment: ${comment}
 });
 
 
-// NO SHOW
+// no show
 router.put('/no-show/:id', auth, roleAuth(["tutor"]), async (req, res) => {
   try {
 

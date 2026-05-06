@@ -1,78 +1,145 @@
-const router = require('express').Router();
-const Booking = require('../models/Booking');
+const express = require('express');
+const router = express.Router();
+
+const Appointment = require('../models/Appointment');
 const auth = require('../middleware/auth');
-const role = require('../middleware/role');
+const roleAuth = require('../middleware/roleAuth');
 
-const Notification = require('../models/Notification');
-const AuditLog = require('../models/AuditLog.js');
+const sendEmail = require('../utils/emailService');
+const createCalendarEvent = require('../utils/googleCalendar'); // 🔥 NEW
+const User = require('../models/User');
 
-router.post('/', auth, role(["student"]), async (req, res) => {
+
+// Create Appointment
+router.post('/', auth, roleAuth(["student"]), async (req, res) => {
   try {
-    const { tutorId, date, startTime, endTime, description } = req.body;
 
-    if (!tutorId || !date || !startTime || !endTime) {
+    const { tutor, course, startTime, endTime, date } = req.body;
+
+    if (!tutor || !course || !startTime || !endTime || !date) {
       return res.status(400).json({ message: "Missing required fields" });
     }
 
-    if (!req.user?.id) {
-      return res.status(401).json({ message: "Unauthorized user" });
+    
+    const existing = await Appointment.findOne({
+      tutor,
+      date,
+      startTime,
+      status: { $in: ["booked", "no-show"] }
+    });
+
+    if (existing) {
+      return res.status(409).json({
+        message: "This time slot is already booked"
+      });
     }
 
-    const booking = await Booking.create({
-      studentId: req.user.id,
-      tutorId,
+    const appointment = new Appointment({
+      tutor,
+      student: req.user.id,
+      course,
       date,
       startTime,
       endTime,
-      description: description || ""
+      status: "booked"
     });
 
-    await Notification.create({
-      userId: req.user.id,
-      type: "BOOKING",
-      message: `Your tutoring session on ${date} at ${startTime} has been booked.`,
-      relatedId: booking._id
-    });
-
-    await AuditLog.create({
-      userId: req.user.id,
-      email: req.user.email,
-      action: "BOOK_APPOINTMENT",
-      ipAddress: req.ip,
-      userAgent: req.headers["user-agent"],
-      metadata: {
-        bookingId: booking._id,
-        tutorId,
-        date,
-        startTime,
-        endTime
+    try {
+      await appointment.save();
+    } catch (err) {
+      if (err.code === 11000) {
+        return res.status(409).json({
+          message: "Time slot already taken (DB)"
+        });
       }
+      throw err;
+    }
+
+    const student = await User.findById(req.user.id);
+    const tutorUser = await User.findById(tutor);
+
+    const message = `
+Appointment Confirmed
+
+Course: ${course}
+Date: ${date}
+Time: ${startTime} - ${endTime}
+`;
+
+    // email
+    await sendEmail(student.email, "Appointment Confirmation", message);
+    await sendEmail(tutorUser.email, "New Appointment Booked", message);
+
+    // Google Calender
+    await createCalendarEvent({
+      course,
+      date,
+      startTime,
+      endTime,
+      studentEmail: student.email,
+      tutorEmail: tutorUser.email
     });
 
-    return res.status(201).json({
-      message: "Booking created",
-      booking
-    });
+    res.status(201).json(appointment);
 
   } catch (err) {
     console.error("BOOKING ERROR:", err);
-    return res.status(500).json({ message: err.message });
+    res.status(500).json({ message: err.message });
   }
 });
 
+
+// Student Appointment
 router.get('/my', auth, async (req, res) => {
   try {
-
-    const bookings = await Booking.find({
-      studentId: req.user.id
+    const appointments = await Appointment.find({
+      student: req.user.id
     })
-    .populate('tutorId', 'name email')
-    .sort({ createdAt: -1 });
+    .populate("tutor", "name email")
+    .populate("student", "name email");
 
-    res.json(bookings);
+    res.json(appointments);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+
+// Tutor Appointment 
+router.get('/tutor', auth, roleAuth(["tutor"]), async (req, res) => {
+  try {
+    const appointments = await Appointment.find({
+      tutor: req.user.id
+    })
+    .populate("student", "name email");
+
+    res.json(appointments);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+
+// Cancel student 
+router.put('/cancel/:id', auth, async (req, res) => {
+  try {
+
+    const appointment = await Appointment.findById(req.params.id);
+
+    if (!appointment) {
+      return res.status(404).json({ message: "Not found" });
+    }
+
+    if (appointment.student.toString() !== req.user.id) {
+      return res.status(403).json({ message: "Not allowed" });
+    }
+
+    appointment.status = "cancelled";
+    await appointment.save();
+
+    res.json(appointment);
 
   } catch (err) {
-    console.error("GET MY BOOKINGS ERROR:", err);
     res.status(500).json({ message: err.message });
   }
 });
