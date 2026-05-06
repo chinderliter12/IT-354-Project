@@ -13,12 +13,19 @@
 </head>
 
 <body>
-    <div ng-if=""></div>
     <header ng-include="headerString"></header>
 
-    <div style="margin: 40px;">
-        <ul class="list-group">
-            <li class="list-group-item">
+    <div style="margin: 40px;" ng-controller="adminFunctions">
+        <div class="d-flex justify-content-center" style="margin-bottom: 20px;">
+            <button id="studentButton" class="btn btn-md d-block" ng-class="menuSelection == 'student' ? 'btn-danger':'btn-secondary'" ng-click="adminDisplay('student')" style="margin: 20px;">Student Menu</button>
+            <button id="tutorButton" class="btn btn-md d-block" ng-class="menuSelection == 'tutor' ? 'btn-danger':'btn-secondary'" ng-click="adminDisplay('tutor')" style="margin: 20px;">Tutor Menu</button>
+            <button id="courseButton" class="btn btn-md d-block" ng-class="menuSelection == 'course' ? 'btn-danger':'btn-secondary'" ng-click="adminDisplay('course')" style="margin: 20px;">Course Menu</button>
+        </div>
+
+        <!-- Student menu -->
+        <ul class="list-group" ng-if="menuSelection == 'student'">
+            
+            <li id='studentMenu' class="list-group-item">
                 <h5>Create New User</h5>
                 <div class="container justify-content-center mx-auto" style="max-width: 600px;">
                     <div class="d-flex flex-column gap-3">
@@ -32,10 +39,10 @@
                             <option value="tutor">Tutor</option>
                         </select>
                     </div>
-
-                    <button class="btn btn-secondary btn-md d-block mx-auto mt-3" ng-click="addUser()">Submit</button>
+                    <button class="btn btn-secondary btn-md d-block mx-auto mt-3" ng-click="addUser()">Add User</button>
                 </div>
             </li>
+
             <li class="list-group-item">
                 <h5>Users (Students & Tutors)</h5>
                 <table class="table">
@@ -58,6 +65,62 @@
                         </tr>
                     </tbody>
                 </table>
+            </li>
+        </ul>
+
+        <!-- Tutor menu-->
+        <ul class="list-group" ng-if="menuSelection == 'tutor'">
+            <li>There is nothing to display.</li>
+        </ul>
+
+        <!-- Course menu-->
+        <ul class="list-group" ng-if="menuSelection == 'course'">
+            <li class="list-group-item">
+                <h5>Create Course</h5>
+                <div class="container justify-content-center mx-auto" style="max-width: 600px;">
+                    <div class="d-flex flex-column gap-3">
+                        <input type="text" ng-model="newCourse.name" placeholder="Course Name" class="form-control mx-auto" style="max-width: 500px;" />
+                        <input type="text" ng-model="newCourse.description" placeholder="Description" class="form-control mx-auto" style="max-width: 500px;" />
+                        <select ng-model="newCourse.tutor" class="form-select">
+                            <option disabled selected>Select Tutor</option>
+                            <option ng-repeat="user in users" ng-if="user.role === 'tutor'" value="{{user._id}}">
+                                {{user.name}}
+                            </option>
+                        </select>
+                    </div>
+
+                    <button class="btn btn-primary btn-md d-block mx-auto mt-3" ng-click="createCourse()">Create Course</button>
+                </div>
+            </li>
+            <li class="list-group-item">
+                <div ng-if="courses && courses.length">
+                    <ul class="list-group">
+                        <li>
+                        <div>
+                            <h5>Courses:</h5>
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Name</th>
+                                        <th scope="col">Tutor Name</th>
+                                        <th scope="col">Description</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="course in courses">
+                                        <td>{{ course.name }}</td>
+                                        <td>{{ course.tutor.name }}</td>
+                                        <td>{{ course.description }}</td>
+                                    </tr>
+                                </tbody>
+                                </table>
+                        </div>
+                    </li>
+                    </ul>
+                </div>
+                <div ng-if="courses && !courses.length">
+                    <p>No course data is available.</p>
+                </div>
             </li>
         </ul>
     </div>

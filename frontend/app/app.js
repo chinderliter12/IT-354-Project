@@ -1,5 +1,15 @@
 var myApp = angular.module('myBigApp', []);
 
+myApp.controller('adminFunctions', ['$scope', function($scope) {
+
+    $scope.displayChoice = 'student';
+    $scope.menuSelection = 'student';
+    
+    $scope.adminDisplay = function(displayChoice) {
+        $scope.menuSelection = displayChoice;
+    }
+}])
+
 myApp.controller('handleEvents', ['$scope', '$http', function ($scope, $http) {
 
     const API_URL = "http://localhost:5001/api";
