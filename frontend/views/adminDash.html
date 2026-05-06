@@ -43,27 +43,6 @@
                 </div>
             </li>
 
-<<<<<<< HEAD
-=======
-            <li class="list-group-item">
-                <h5>Create Course</h5>
-                <div class="container justify-content-center mx-auto" style="max-width: 600px;">
-                    <div class="d-flex flex-column gap-3">
-                        <input type="text" ng-model="newCourse.name" placeholder="Course Name" class="form-control mx-auto" style="max-width: 500px;" />
-                        <input type="text" ng-model="newCourse.description" placeholder="Description" class="form-control mx-auto" style="max-width: 500px;" />
-                        <select ng-model="newCourse.tutor" class="form-select">
-                            <option disabled selected>Select Tutor</option>
-                            <option ng-repeat="user in users" ng-if="user.role === 'tutor'" value="{{user._id}}">
-                                {{user.name}}
-                            </option>
-                        </select>
-                    </div>
-
-                    <button class="btn btn-primary btn-md d-block mx-auto mt-3" ng-click="createCourse()">Create Course</button>
-                </div>
-            </li>
-
->>>>>>> origin/frontend-fix
             <li class="list-group-item">
                 <h5>Users (Students & Tutors)</h5>
                 <table class="table">
@@ -113,10 +92,10 @@
                     <button class="btn btn-primary btn-md d-block mx-auto mt-3" ng-click="createCourse()">Create Course</button>
                 </div>
             </li>
+
             <li class="list-group-item">
                 <div ng-if="courses && courses.length">
                     <ul class="list-group">
-                        <li>
                         <div>
                             <h5>Courses:</h5>
                             <table class="table">
@@ -136,7 +115,6 @@
                                 </tbody>
                                 </table>
                         </div>
-                    </li>
                     </ul>
                 </div>
                 <div ng-if="courses && !courses.length">
