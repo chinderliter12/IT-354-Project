@@ -1,0 +1,63 @@
+Here are some of the security features within our project. 
+
+Authentication & Authorization
+Passwords are hashed using bcrypt or similar
+JWT tokens are used for authentication
+JWT tokens have an expiration time set
+Role-based access control is implemented (admin, tutor, student)
+Protected routes use middleware (auth, roleAuth)
+Users cannot access admin-only endpoints directly
+
+
+
+API Security
+All sensitive routes require authentication
+Input validation is applied on all API requests
+No direct database access from frontend
+Proper HTTP status codes are used
+
+Google Calendar Security
+OAuth 2.0 is used for Google authentication
+Client ID and Client Secret stored in .env
+Refresh token stored securely on backend
+Access tokens generated server-side only
+Calendar API not exposed to frontend
+Tokens are not logged
+
+
+
+
+Data Protection
+Passwords are not stored in plaintext
+Sensitive data stored securely in MongoDB
+Environment variables used for secrets
+Database access is restricted
+No sensitive data exposed to frontend
+
+
+
+
+Frontend Security
+No API keys stored in frontend
+Role checks enforced in backend (not just UI)
+Inputs are sanitized before sending
+Protected pages require login
+Input Validation & Injection Protection
+All inputs validated on backend
+Mongoose schema validation enabled
+Protection against NoSQL injection
+XSS prevention through sanitization
+
+
+
+
+Environment & Deployment Security
+.env file is in .gitignore
+No secrets pushed to GitHub
+HTTPS used in production
+MongoDB secured with authentication
+Logging & Monitoring
+User actions are logged
+Failed login attempts tracked
+No sensitive data in logs
+Admin-only access to audit logs

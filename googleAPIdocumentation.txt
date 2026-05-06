@@ -1,0 +1,15 @@
+The project integrates the Google Calendar API into a tutoring system to automatically create calendar events whenever a tutoring appointment is booked. The goal is to improve scheduling efficiency by ensuring all appointments are synchronized with Google Calendar.
+
+Authentication Setup
+
+The system uses OAuth 2.0 to securely connect with Google services.
+
+A Google Cloud project is created and configured with the following credentials:
+
+Client ID
+Client Secret
+Redirect URI
+
+After setup, a refresh token is generated using Google’s OAuth Playground. This token is stored securely in the backend .env file.
+
+This allows the application to access Google Calendar without requiring users to log in repeatedly.
