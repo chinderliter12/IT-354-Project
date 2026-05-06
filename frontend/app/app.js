@@ -25,6 +25,13 @@ myApp.controller('handleEvents', ['$scope', '$http', function ($scope, $http) {
     $scope.headerString = '../subviews/guestHeader.html';
     $scope.logName = '';
 
+    $scope.newCourse = {};
+
+    $scope.tutorAppointments = [];
+
+    // prevent double-click / double request
+    $scope.isBooking = false;
+
     $scope.slots = [
         { label: "9:00 - 10:00", value: "9:00-10:00" },
         { label: "10:00 - 11:00", value: "10:00-11:00" },
@@ -54,7 +61,7 @@ myApp.controller('handleEvents', ['$scope', '$http', function ($scope, $http) {
 
         if(role == 'admin') {
             $scope.headerString = '../subviews/adminHeader.html';
-        } else if (role== 'tutor') {
+        } else if (role == 'tutor') {
             $scope.headerString = '../subviews/tutorHeader.html';
         } else if (role == 'student') {
             $scope.headerString = '../subviews/studentHeader.html';
@@ -97,7 +104,7 @@ myApp.controller('handleEvents', ['$scope', '$http', function ($scope, $http) {
         localStorage.removeItem("name");
 
         $scope.determineHeader();
-        
+
         delete $http.defaults.headers.common.Authorization;
         window.location.href = "/views/homePage.html";
     };
@@ -106,16 +113,12 @@ myApp.controller('handleEvents', ['$scope', '$http', function ($scope, $http) {
         const token = localStorage.getItem("token");
 
         $http.get(`${API_URL}/users`, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
+            headers: { Authorization: `Bearer ${token}` }
         })
         .then(res => {
             $scope.users = res.data;
         })
-        .catch(err => {
-            console.error("GET USERS ERROR:", err);
-        });
+        .catch(err => console.error("GET USERS ERROR:", err));
     };
 
     $scope.updateActive = function(userId) {
@@ -152,12 +155,9 @@ myApp.controller('handleEvents', ['$scope', '$http', function ($scope, $http) {
         const token = localStorage.getItem("token");
 
         $http.post(`${API_URL}/users`, newUser, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
+            headers: { Authorization: `Bearer ${token}` }
         })
         .then(res => {
-            console.log("User created:", res.data);
             $scope.getUsers();
             alert("User created successfully");
         })
@@ -165,6 +165,21 @@ myApp.controller('handleEvents', ['$scope', '$http', function ($scope, $http) {
             console.error("CREATE USER ERROR:", err);
             alert(err.data?.message || "Failed to create user");
         });
+    };
+
+    $scope.createCourse = function () {
+
+        const token = localStorage.getItem("token");
+
+        $http.post(`${API_URL}/courses`, $scope.newCourse, {
+            headers: { Authorization: `Bearer ${token}` }
+        })
+        .then(res => {
+            alert("Course created!");
+            $scope.newCourse = {};
+            $scope.getCourses();
+        })
+        .catch(err => console.error(err));
     };
 
     $scope.getCourses = function () {
@@ -176,24 +191,28 @@ myApp.controller('handleEvents', ['$scope', '$http', function ($scope, $http) {
     };
 
     $scope.setBooking = function(course) {
-
-        $scope.appointment.tutorName = course.tutor;
+        $scope.appointment.tutorName = course.tutor?._id || course.tutor;
         $scope.appointment.courseName = course.name;
-
-        $scope.bookAppointment();
     };
 
     $scope.bookAppointment = function () {
+
+        // prevent double click / double request
+        if ($scope.isBooking) return;
+
+        $scope.isBooking = true;
 
         const token = localStorage.getItem("token");
 
         if (!token) {
             alert("You must be logged in");
+            $scope.isBooking = false;
             return;
         }
 
         if (!$scope.appointment.date || !$scope.appointment.slot) {
             alert("Select date and time slot");
+            $scope.isBooking = false;
             return;
         }
 
@@ -208,9 +227,7 @@ myApp.controller('handleEvents', ['$scope', '$http', function ($scope, $http) {
         };
 
         $http.post(`${API_URL}/appointments`, data, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
+            headers: { Authorization: `Bearer ${token}` }
         })
         .then(res => {
             alert("Appointment booked!");
@@ -219,6 +236,9 @@ myApp.controller('handleEvents', ['$scope', '$http', function ($scope, $http) {
         .catch(err => {
             console.error(err);
             alert(err.data?.message || "Booking failed");
+        })
+        .finally(() => {
+            $scope.isBooking = false;
         });
     };
 
@@ -240,8 +260,20 @@ myApp.controller('handleEvents', ['$scope', '$http', function ($scope, $http) {
         $http.put(`${API_URL}/appointments/cancel/${id}`, {}, {
             headers: { Authorization: `Bearer ${token}` }
         })
-        .then(() => {
-            $scope.getMyAppointments();
+        .then(() => $scope.getMyAppointments())
+        .catch(err => console.error(err));
+    };
+
+    $scope.getTutorAppointments = function () {
+
+        const token = localStorage.getItem("token");
+        if (!token) return;
+
+        $http.get(`${API_URL}/appointments/tutor`, {
+            headers: { Authorization: `Bearer ${token}` }
+        })
+        .then(res => {
+            $scope.tutorAppointments = res.data;
         })
         .catch(err => console.error(err));
     };
@@ -250,5 +282,6 @@ myApp.controller('handleEvents', ['$scope', '$http', function ($scope, $http) {
     $scope.determineHeader();
     $scope.getMyAppointments();
     $scope.getUsers();
+    $scope.getTutorAppointments();
 
 }]);

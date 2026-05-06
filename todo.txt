@@ -2,7 +2,7 @@ Please update this as you complete tasks!
 Left to Complete:
     Student:
         -Cancel own appointment (with audit trail)
-
+        
     Tutor:
         -Mark start and end times
         -Cancel appointments
@@ -12,7 +12,7 @@ Left to Complete:
         -View all appointments
         -Enable and disable user accounts
     General:
-        -Notification log for emails
+    
         -Only let users access URLs that they should be able to access (student can't type in adminDash.html)
         -Login trail and account lockout for incorrect login
         -External API integration
@@ -44,3 +44,4 @@ Already Completed:
         -Authorization using roles
         -Secure password handling
         -No secrets in GitHub
+        -Notification log for emails

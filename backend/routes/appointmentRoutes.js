@@ -8,6 +8,8 @@ const roleAuth = require('../middleware/roleAuth');
 const sendEmail = require('../utils/emailService');
 const User = require('../models/User');
 
+
+// CREATE APPOINTMENT (student only)
 router.post('/', auth, roleAuth(["student"]), async (req, res) => {
   try {
 
@@ -29,23 +31,7 @@ router.post('/', auth, roleAuth(["student"]), async (req, res) => {
       });
     }
 
-    const existing = await Appointment.findOne({
-      tutor,
-      date,
-      status: { $in: ["booked", "no-show"] },
-      $or: [
-        { startTime, endTime },
-        { startTime: { $lte: startTime }, endTime: { $gt: startTime } },
-        { startTime: { $lt: endTime }, endTime: { $gte: endTime } }
-      ]
-    });
-
-    if (existing) {
-      return res.status(400).json({
-        message: "This time slot is already booked"
-      });
-    }
-
+    // IMPORTANT: rely on MongoDB uniqueness instead of fragile manual checks
     const appointment = new Appointment({
       tutor,
       student: req.user.id,
@@ -62,7 +48,7 @@ router.post('/', auth, roleAuth(["student"]), async (req, res) => {
     const tutorUser = await User.findById(tutor);
 
     const message = `
-Appointment Confirmation
+Appointment Confirmed
 
 Course: ${course}
 Date: ${date}
@@ -70,22 +56,34 @@ Time: ${startTime} - ${endTime}
 `;
 
     await sendEmail(student.email, "Appointment Confirmation", message);
-    await sendEmail(tutorUser.email, "New Tutoring Appointment", message);
+    await sendEmail(tutorUser.email, "New Appointment Booked", message);
 
-    res.status(201).json(appointment);
+    return res.status(201).json(appointment);
 
   } catch (err) {
+
+    // ✅ CLEAN DUPLICATE HANDLING (THIS FIXES YOUR ISSUE)
+    if (err.code === 11000) {
+      return res.status(409).json({
+        message: "This time slot is already booked"
+      });
+    }
+
     console.error(err);
-    res.status(500).json({ message: err.message });
+    return res.status(500).json({ message: err.message });
   }
 });
 
+
+// STUDENT APPOINTMENTS
 router.get('/my', auth, async (req, res) => {
   try {
 
     const appointments = await Appointment.find({
       student: req.user.id
-    });
+    })
+      .populate("tutor", "name email")
+      .populate("student", "name email");
 
     res.json(appointments);
 
@@ -94,12 +92,16 @@ router.get('/my', auth, async (req, res) => {
   }
 });
 
+
+// TUTOR APPOINTMENTS
 router.get('/tutor', auth, roleAuth(["tutor"]), async (req, res) => {
   try {
 
     const appointments = await Appointment.find({
       tutor: req.user.id
-    });
+    })
+      .populate("student", "name email")
+      .populate("tutor", "name email");
 
     res.json(appointments);
 
@@ -108,6 +110,8 @@ router.get('/tutor', auth, roleAuth(["tutor"]), async (req, res) => {
   }
 });
 
+
+// CANCEL (student only)
 router.put('/cancel/:id', auth, async (req, res) => {
   try {
 
@@ -122,8 +126,21 @@ router.put('/cancel/:id', auth, async (req, res) => {
     }
 
     appointment.status = "cancelled";
-
     await appointment.save();
+
+    const student = await User.findById(appointment.student);
+    const tutor = await User.findById(appointment.tutor);
+
+    const message = `
+Appointment Cancelled
+
+Course: ${appointment.course}
+Date: ${appointment.date}
+Time: ${appointment.startTime} - ${appointment.endTime}
+`;
+
+    await sendEmail(student.email, "Appointment Cancelled", message);
+    await sendEmail(tutor.email, "Student Cancelled Appointment", message);
 
     res.json(appointment);
 
@@ -132,6 +149,8 @@ router.put('/cancel/:id', auth, async (req, res) => {
   }
 });
 
+
+// TUTOR COMMENT
 router.put('/comment/:id', auth, roleAuth(["tutor"]), async (req, res) => {
   try {
 
@@ -148,8 +167,18 @@ router.put('/comment/:id', auth, roleAuth(["tutor"]), async (req, res) => {
     }
 
     appointment.comment = comment;
-
     await appointment.save();
+
+    const student = await User.findById(appointment.student);
+
+    const message = `
+Tutor Feedback
+
+Course: ${appointment.course}
+Comment: ${comment}
+`;
+
+    await sendEmail(student.email, "Tutor Feedback Received", message);
 
     res.json(appointment);
 
@@ -158,6 +187,8 @@ router.put('/comment/:id', auth, roleAuth(["tutor"]), async (req, res) => {
   }
 });
 
+
+// NO SHOW
 router.put('/no-show/:id', auth, roleAuth(["tutor"]), async (req, res) => {
   try {
 
@@ -172,8 +203,19 @@ router.put('/no-show/:id', auth, roleAuth(["tutor"]), async (req, res) => {
     }
 
     appointment.status = "no-show";
-
     await appointment.save();
+
+    const student = await User.findById(appointment.student);
+
+    const message = `
+Your appointment was marked as NO-SHOW
+
+Course: ${appointment.course}
+Date: ${appointment.date}
+Time: ${appointment.startTime} - ${appointment.endTime}
+`;
+
+    await sendEmail(student.email, "No-Show Notification", message);
 
     res.json(appointment);
 
