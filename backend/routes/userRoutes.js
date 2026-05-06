@@ -6,38 +6,70 @@ const auth = require('../middleware/auth');
 const roleAuth = require('../middleware/roleAuth');
 
 
-// Get all users (admin only)
+// get all users (admin only)
 router.get('/', auth, roleAuth(["admin"]), async (req, res) => {
   try {
     const users = await User.find().select("-password");
     res.json(users);
   } catch (err) {
-    console.error("GET USERS ERROR:", err);
+    console.error("get users error:", err);
     res.status(500).json({ message: err.message });
   }
 });
 
-// Create tutor or student (admin only)
+
+// create user (admin only)
 router.post('/', auth, roleAuth(["admin"]), async (req, res) => {
   try {
 
     const { name, username, email, password, role } = req.body;
 
-    // preventing incomplete user info
+    // required fields
     if (!name || !username || !email || !password) {
-      return res.status(400).json({ message: "Missing required fields" });
+      return res.status(400).json({ message: "missing required fields" });
     }
 
-    // prevent duplicates
+    // name validation (letters only)
+    const nameRegex = /^[a-zA-Z\s]+$/;
+    if (!nameRegex.test(name)) {
+      return res.status(400).json({
+        message: "name can only contain letters"
+      });
+    }
+
+    // username validation
+    const usernameRegex = /^[a-zA-Z0-9_]+$/;
+    if (!usernameRegex.test(username)) {
+      return res.status(400).json({
+        message: "username can only contain letters, numbers, and underscores"
+      });
+    }
+
+    // email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({
+        message: "invalid email format"
+      });
+    }
+
+    // password validation
+    if (password.length < 6) {
+      return res.status(400).json({
+        message: "password must be at least 6 characters"
+      });
+    }
+
+    // check duplicates
     const existingUser = await User.findOne({
       $or: [{ email }, { username }]
     });
 
     if (existingUser) {
-      return res.status(400).json({ message: "User already exists" });
+      return res.status(400).json({ message: "user already exists" });
     }
 
-    // create user 
+    // create user
     const user = new User({
       name,
       username,
@@ -47,10 +79,10 @@ router.post('/', auth, roleAuth(["admin"]), async (req, res) => {
       active: true
     });
 
-    await user.save(); // 
+    await user.save();
 
     res.status(201).json({
-      message: "User created",
+      message: "user created",
       user: {
         id: user._id,
         name: user.name,
@@ -62,24 +94,27 @@ router.post('/', auth, roleAuth(["admin"]), async (req, res) => {
     });
 
   } catch (err) {
-    console.error("CREATE USER ERROR:", err);
+    console.error("create user error:", err);
     res.status(500).json({ message: err.message });
   }
 });
 
-// update user active status
+
+// toggle active status
 router.put('/toggle/:id', auth, roleAuth(["admin"]), async (req, res) => {
   try {
+
     const user = await User.findById(req.params.id);
+
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      return res.status(404).json({ message: "user not found" });
     }
 
     user.active = !user.active;
     await user.save();
 
     res.json({
-      message: "User status updated",
+      message: "user status updated",
       user: {
         id: user._id,
         name: user.name,
@@ -89,7 +124,7 @@ router.put('/toggle/:id', auth, roleAuth(["admin"]), async (req, res) => {
     });
 
   } catch (err) {
-    console.error("TOGGLE USER ERROR:", err);
+    console.error("toggle user error:", err);
     res.status(500).json({ message: err.message });
   }
 });
