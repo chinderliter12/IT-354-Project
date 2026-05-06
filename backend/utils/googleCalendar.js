@@ -10,29 +10,66 @@ oAuth2Client.setCredentials({
   refresh_token: process.env.GOOGLE_REFRESH_TOKEN
 });
 
-const calendar = google.calendar({ version: 'v3', auth: oAuth2Client });
+const calendar = google.calendar({
+  version: 'v3',
+  auth: oAuth2Client
+});
 
-async function createEvent({ course, date, startTime, endTime, studentEmail, tutorEmail }) {
 
-  const event = {
-    summary: `Tutoring: ${course}`,
-    description: "Tutoring session",
-    start: {
-      dateTime: new Date(`${date}T${startTime}:00`).toISOString(),
-    },
-    end: {
-      dateTime: new Date(`${date}T${endTime}:00`).toISOString(),
-    },
-    attendees: [
-      { email: studentEmail },
-      { email: tutorEmail }
-    ]
-  };
+function formatTime(time) {
+  let [hour, minute] = time.split(":");
 
-  return await calendar.events.insert({
-    calendarId: 'primary',
-    resource: event,
-  });
+  hour = hour.padStart(2, "0"); // 9 -> 09
+
+  return `${hour}:${minute}:00`;
 }
 
-module.exports = createEvent;
+async function createCalendarEvent({
+  course,
+  date,
+  startTime,
+  endTime,
+  studentEmail,
+  tutorEmail
+}) {
+  try {
+
+    const startDateTime = new Date(`${date}T${formatTime(startTime)}`);
+    const endDateTime = new Date(`${date}T${formatTime(endTime)}`);
+
+    if (isNaN(startDateTime) || isNaN(endDateTime)) {
+      throw new Error("Invalid date/time format");
+    }
+
+    const event = {
+      summary: `Tutoring: ${course}`,
+      description: "Tutoring session",
+      start: {
+        dateTime: startDateTime.toISOString(),
+        timeZone: 'America/Chicago'
+      },
+      end: {
+        dateTime: endDateTime.toISOString(),
+        timeZone: 'America/Chicago'
+      },
+      attendees: [
+        { email: studentEmail },
+        { email: tutorEmail }
+      ]
+    };
+
+    const result = await calendar.events.insert({
+      calendarId: 'primary',
+      resource: event
+    });
+
+    console.log(" Calendar event created");
+
+    return result;
+
+  } catch (err) {
+    console.error(" Google Calendar Error:", err.message);
+  }
+}
+
+module.exports = createCalendarEvent;

@@ -5,7 +5,7 @@ Left to Complete:
         
     Tutor:
         -Mark start and end times
-        -Cancel appointments
+        
     Admin:
         -Change tutoring hours and availability
         -Assign tutor hours
