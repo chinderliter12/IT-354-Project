@@ -3,96 +3,98 @@
 
 <!DOCTYPE html>
 <html lang="en" ng-app="myBigApp" ng-controller="handleEvents">
-    <head>
-        <title>Tutoring Center Home Page</title>
-        <link href="../assets/css/styles.css" rel="stylesheet" type="text/css" />
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-        <script src="../app/lib/angular.min.js"></script>
-        <script src="../app/app.js"></script>
-    </head>
-    <body>
-        <div></div>
+<head>
+    <title>Tutoring Center Home Page</title>
+    <link href="../assets/css/styles.css" rel="stylesheet" type="text/css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="../app/lib/angular.min.js"></script>
+    <script src="../app/app.js"></script>
+</head>
+
+<body>
+    <div ng-controller="loginFunctions">
         <header ng-include="headerString"></header>
-        <div class="main-container">
-            <h4 style="margin: 40px;">Home Page</h4>
+    </div>
+    <div class="main-container">
+        <h4 style="margin: 40px;">Home Page</h4>
 
-            <!-- Should we just remove the search bar on the home page? -->
-            <!-- We could link it to hours.html, but I'm not sure it does much for us -->
-            <div class="container justify-content-center px-4" style="margin: 100px" ng-if="userRole!='guest'">
-                Welcome, {{ logName }}
-            </div>
-            <div class="container justify-content-center px-4 mx-auto" style="margin: 100px" ng-if="userRole=='guest'">
-                <p class="mx-auto">Welcome to the IT Learning Center!</p>
-                <p class="mx-auto">Please <a href=login.html>log in</a> to view your appointments and book new tutoring sessions.</p>
-            </div>
-
-            <div id="carouselExampleIndicators" class="carousel slide">
-                <div class="carousel-indicators">
-                    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-                    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
-                    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
-                </div>
-                <div class="carousel-inner">
-                    <div class="carousel-item active">
-                        <img src="../assets/images/learning_center.jpg" class="d-block w-100 h-100" alt="An image of the inside of the IT learning center.">
-                    </div>
-                    <div class="carousel-item">
-                        <img src="../assets/images/tutoring.jpg" class="d-block w-100 h-100" alt="An image of a student being mentored by someone else.">
-                    </div>
-                    <div class="carousel-item">
-                        <img src="../assets/images/computer_studying.jpg" class="d-block w-100 h-100" alt="An image of two students looking at a computer.">
-                    </div>
-                </div>
-                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
-                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Previous</span>
-                </button>
-                <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
-                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Next</span>
-                </button>
-            </div>
-
-            <div style="margin: 40px; margin-top: 60px;">
-                <h4>Tutoring Center Information:</h4>
-                <p style="margin: 20px;">The ISU School of Information Technology Learning Center is dedicated to helping 
-                    students succeed both in their courses and in their fields. Free tutoring services are available every
-                    day of the week, including weekends. Search a course or view all courses above to sign up for a tutoring
-                    slot and get the help you need. </p>
-                <h5>Daily Hours:</h5>
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item d-flex justify-content-between">
-                        <strong>Monday: </strong>
-                        <div>8AM - 6PM</div>
-                    </li>
-                    <li class="list-group-item d-flex justify-content-between">
-                        <strong>Tuesday: </strong>
-                        <div>8AM - 6PM</div>
-                    </li>
-                    <li class="list-group-item d-flex justify-content-between">
-                        <strong>Wednesday: </strong>
-                        <div>8AM - 6PM</div>
-                    </li>
-                    <li class="list-group-item d-flex justify-content-between">
-                        <strong>Thursday: </strong>
-                        <div>8AM - 6PM</div>
-                    </li>
-                    <li class="list-group-item d-flex justify-content-between">
-                        <strong>Friday: </strong>
-                        <div>8AM - 6PM</div>
-                    </li>
-                    <li class="list-group-item d-flex justify-content-between">
-                        <strong>Saturday: </strong>
-                        <div>12PM - 5PM</div>
-                    </li>
-                    <li class="list-group-item d-flex justify-content-between">
-                        <strong>Monday: </strong>
-                        <div>12PM - 5PM</div>
-                    </li>
-                </ul>
-            </div>
-            
+        <!-- Should we just remove the search bar on the home page? -->
+        <!-- We could link it to hours.html, but I'm not sure it does much for us -->
+        <div class="container justify-content-center px-4" style="margin: 100px" ng-if="userRole!='guest'">
+            Welcome, {{ logName }}
         </div>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    </body>
+        <div class="container justify-content-center px-4 mx-auto" style="margin: 100px" ng-if="userRole=='guest'">
+            <p class="mx-auto">Welcome to the IT Learning Center!</p>
+            <p class="mx-auto">Please <a href=login.html>log in</a> to view your appointments and book new tutoring sessions.</p>
+        </div>
+
+        <div id="carouselExampleIndicators" class="carousel slide">
+            <div class="carousel-indicators">
+                <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
+            </div>
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <img src="../assets/images/learning_center.jpg" class="d-block w-100 h-100" alt="An image of the inside of the IT learning center.">
+                </div>
+                <div class="carousel-item">
+                    <img src="../assets/images/tutoring.jpg" class="d-block w-100 h-100" alt="An image of a student being mentored by someone else.">
+                </div>
+                <div class="carousel-item">
+                    <img src="../assets/images/computer_studying.jpg" class="d-block w-100 h-100" alt="An image of two students looking at a computer.">
+                </div>
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>
+
+        <div style="margin: 40px; margin-top: 60px;">
+            <h4>Tutoring Center Information:</h4>
+            <p style="margin: 20px;">The ISU School of Information Technology Learning Center is dedicated to helping 
+                students succeed both in their courses and in their fields. Free tutoring services are available every
+                day of the week, including weekends. Search a course or view all courses above to sign up for a tutoring
+                slot and get the help you need. </p>
+            <h5>Daily Hours:</h5>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item d-flex justify-content-between">
+                    <strong>Monday: </strong>
+                    <div>8AM - 6PM</div>
+                </li>
+                <li class="list-group-item d-flex justify-content-between">
+                    <strong>Tuesday: </strong>
+                    <div>8AM - 6PM</div>
+                </li>
+                <li class="list-group-item d-flex justify-content-between">
+                    <strong>Wednesday: </strong>
+                    <div>8AM - 6PM</div>
+                </li>
+                <li class="list-group-item d-flex justify-content-between">
+                    <strong>Thursday: </strong>
+                    <div>8AM - 6PM</div>
+                </li>
+                <li class="list-group-item d-flex justify-content-between">
+                    <strong>Friday: </strong>
+                    <div>8AM - 6PM</div>
+                </li>
+                <li class="list-group-item d-flex justify-content-between">
+                    <strong>Saturday: </strong>
+                    <div>12PM - 5PM</div>
+                </li>
+                <li class="list-group-item d-flex justify-content-between">
+                    <strong>Monday: </strong>
+                    <div>12PM - 5PM</div>
+                </li>
+            </ul>
+        </div>
+        
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
 </html>

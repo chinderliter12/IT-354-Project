@@ -12,7 +12,9 @@
 </head>
 
 <body ng-controller="handleEvents">
-    <header ng-include="headerString"></header>
+    <div ng-controller="loginFunctions">
+        <header ng-include="headerString"></header>
+    </div>
     <div class="container mt-4">
         <h2>Student Dashboard</h2>
         <button class="btn btn-primary mb-3"

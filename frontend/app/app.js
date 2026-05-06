@@ -1,113 +1,17 @@
 var myApp = angular.module('myBigApp', []);
 
-myApp.controller('adminFunctions', ['$scope', function($scope) {
+myApp.controller('adminFunctions', ['$scope', '$http', function ($scope, $http) {
+
+    const API_URL = "http://localhost:5001/api";
 
     $scope.displayChoice = 'student';
     $scope.menuSelection = 'student';
+    $scope.newCourse = {};
+    $scope.users = [];
     
     $scope.adminDisplay = function(displayChoice) {
         $scope.menuSelection = displayChoice;
     }
-}])
-
-myApp.controller('handleEvents', ['$scope', '$http', function ($scope, $http) {
-
-    const API_URL = "http://localhost:5001/api";
-
-    $scope.loginData = {};
-    $scope.register = {};
-    $scope.appointment = {};
-    $scope.appointments = [];
-    $scope.courses = [];
-    $scope.availability = [];
-    $scope.users = [];
-    $scope.userRole = 'guest';
-    $scope.headerString = '../subviews/guestHeader.html';
-    $scope.logName = '';
-
-    $scope.newCourse = {};
-
-    $scope.tutorAppointments = [];
-
-    // prevent double-click / double request
-    $scope.isBooking = false;
-
-    $scope.slots = [
-        { label: "9:00 - 10:00", value: "9:00-10:00" },
-        { label: "10:00 - 11:00", value: "10:00-11:00" },
-        { label: "11:00 - 12:00", value: "11:00-12:00" },
-        { label: "1:00 - 2:00", value: "1:00-2:00" },
-        { label: "2:00 - 3:00", value: "2:00-3:00" }
-    ];
-
-    const savedToken = localStorage.getItem("token");
-    if (savedToken) {
-        $http.defaults.headers.common.Authorization = `Bearer ${savedToken}`;
-    }
-
-    let today = new Date();
-    $scope.today = today.toISOString().split("T")[0];
-
-    let max = new Date();
-    max.setDate(max.getDate() + 21);
-    $scope.maxDate = max.toISOString().split("T")[0];
-
-    $scope.determineHeader = function () {
-        const role = localStorage.getItem("role") || 'guest';
-        const name = localStorage.getItem("name") || '';
-
-        $scope.logName = name;
-        $scope.userRole = role;
-
-        if(role == 'admin') {
-            $scope.headerString = '../subviews/adminHeader.html';
-        } else if (role == 'tutor') {
-            $scope.headerString = '../subviews/tutorHeader.html';
-        } else if (role == 'student') {
-            $scope.headerString = '../subviews/studentHeader.html';
-        } else {
-            $scope.headerString = '../subviews/guestHeader.html';
-        }
-    };
-
-    $scope.loginUser = function () {
-
-        $http.post(`${API_URL}/auth/login`, $scope.loginData)
-            .then(res => {
-
-                localStorage.setItem("token", res.data.token);
-                localStorage.setItem("userId", res.data.user.id);
-                localStorage.setItem("role", res.data.user.role);
-                localStorage.setItem("name", res.data.user.name);
-
-                $scope.logName = res.data.user.name;
-
-                $http.defaults.headers.common.Authorization =
-                    `Bearer ${res.data.token}`;
-
-                $scope.determineHeader();
-
-                alert("Login successful!");
-
-                window.location.href = "/views/homePage.html";
-            })
-            .catch(err => {
-                console.error(err);
-                alert(err.data?.message || "Login failed");
-            });
-    };
-
-    $scope.logoutUser = function() {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("role");
-        localStorage.removeItem("name");
-
-        $scope.determineHeader();
-
-        delete $http.defaults.headers.common.Authorization;
-        window.location.href = "/views/homePage.html";
-    };
 
     $scope.getUsers = function () {
         const token = localStorage.getItem("token");
@@ -190,6 +94,119 @@ myApp.controller('handleEvents', ['$scope', '$http', function ($scope, $http) {
             .catch(err => console.error(err));
     };
 
+    $scope.getUsers();
+    $scope.getCourses();
+}])
+
+myApp.controller('loginFunctions', ['$scope', '$http', function ($scope, $http) {
+
+    const API_URL = "http://localhost:5001/api";
+
+    $scope.headerString = '../subviews/guestHeader.html';
+    $scope.logName = '';
+    $scope.userRole = 'guest';
+    $scope.loginData = {};
+
+    $scope.determineHeader = function () {
+        const role = localStorage.getItem("role") || 'guest';
+        const name = localStorage.getItem("name") || '';
+
+        $scope.logName = name;
+        $scope.userRole = role;
+
+        if(role == 'admin') {
+            $scope.headerString = '../subviews/adminHeader.html';
+        } else if (role == 'tutor') {
+            $scope.headerString = '../subviews/tutorHeader.html';
+        } else if (role == 'student') {
+            $scope.headerString = '../subviews/studentHeader.html';
+        } else {
+            $scope.headerString = '../subviews/guestHeader.html';
+        }
+    };
+
+    $scope.loginUser = function () {
+
+        $http.post(`${API_URL}/auth/login`, $scope.loginData)
+            .then(res => {
+
+                localStorage.setItem("token", res.data.token);
+                localStorage.setItem("userId", res.data.user.id);
+                localStorage.setItem("role", res.data.user.role);
+                localStorage.setItem("name", res.data.user.name);
+
+                $scope.logName = res.data.user.name;
+
+                $http.defaults.headers.common.Authorization =
+                    `Bearer ${res.data.token}`;
+
+                $scope.determineHeader();
+
+                alert("Login successful!");
+
+                window.location.href = "/views/homePage.html";
+            })
+            .catch(err => {
+                console.error(err);
+                alert(err.data?.message || "Login failed");
+            });
+    };
+
+    $scope.logoutUser = function() {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.removeItem("name");
+
+        $scope.determineHeader();
+
+        delete $http.defaults.headers.common.Authorization;
+        window.location.href = "/views/homePage.html";
+    };
+
+    $scope.determineHeader();
+}])
+
+myApp.controller('handleEvents', ['$scope', '$http', function ($scope, $http) {
+
+    const API_URL = "http://localhost:5001/api";
+
+    $scope.appointment = {};
+    $scope.appointments = [];
+    $scope.courses = [];
+    $scope.tutorAppointments = [];
+
+    // prevent double-click / double request
+    $scope.isBooking = false;
+
+    $scope.slots = [
+        { label: "9:00 - 10:00", value: "9:00-10:00" },
+        { label: "10:00 - 11:00", value: "10:00-11:00" },
+        { label: "11:00 - 12:00", value: "11:00-12:00" },
+        { label: "1:00 - 2:00", value: "1:00-2:00" },
+        { label: "2:00 - 3:00", value: "2:00-3:00" }
+    ];
+
+    const savedToken = localStorage.getItem("token");
+    if (savedToken) {
+        $http.defaults.headers.common.Authorization = `Bearer ${savedToken}`;
+    }
+
+    let today = new Date();
+    $scope.today = today.toISOString().split("T")[0];
+
+    let max = new Date();
+    max.setDate(max.getDate() + 21);
+    $scope.maxDate = max.toISOString().split("T")[0];
+
+    $scope.getCourses = function () {
+        $http.get(`${API_URL}/courses`)
+            .then(res => {
+                $scope.courses = res.data;
+            })
+            .catch(err => console.error(err));
+    };
+
     $scope.setBooking = function(course) {
         $scope.appointment.tutorName = course.tutor?._id || course.tutor;
         $scope.appointment.courseName = course.name;
@@ -225,6 +242,8 @@ myApp.controller('handleEvents', ['$scope', '$http', function ($scope, $http) {
             startTime: times[0],
             endTime: times[1]
         };
+
+        console.log(data);
 
         $http.post(`${API_URL}/appointments`, data, {
             headers: { Authorization: `Bearer ${token}` }
@@ -279,9 +298,7 @@ myApp.controller('handleEvents', ['$scope', '$http', function ($scope, $http) {
     };
 
     $scope.getCourses();
-    $scope.determineHeader();
     $scope.getMyAppointments();
-    $scope.getUsers();
     $scope.getTutorAppointments();
 
 }]);
