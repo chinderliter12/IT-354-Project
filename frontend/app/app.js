@@ -7,27 +7,22 @@ myApp.controller('adminFunctions', ['$scope', '$http', function ($scope, $http) 
     $scope.displayChoice = 'student';
     $scope.menuSelection = 'student';
 
-<<<<<<< HEAD
     $scope.courses = [];
-=======
->>>>>>> newfrontend
     $scope.newCourse = {};
     $scope.users = [];
 
     $scope.tutorAvailability = [];
     $scope.selectedTutorAvailability = {};
-<<<<<<< HEAD
 
-    $scope.nameRe = /^[A-Za-z ]*{2, 40}$/;
-    $scope.emailRe = /^[A-Za-z\d_-.]@[A-Za-z\d_-.]*{4, 30}$/;
-    $scope.usernameRe = /^[A-Za-z\d?!@$&%_]*{4, 30}$/;
-    $scope.passwordRe = /^[A-Za-z\d?!@$&%_]*{4, 30}$/;
+    $scope.nameRe = /^[A-Za-z ]{2,40}$/;
+    $scope.emailRe = /^[A-Za-z\d_.-]+@[A-Za-z\d_.-]{4,30}$/;
+    $scope.usernameRe = /^[A-Za-z\d?!@$&%_]{4,30}$/;
+    $scope.passwordRe = /^[A-Za-z\d?!@$&%_]{4,30}$/;
+
 
     
-=======
     $scope.logs = [];
 
->>>>>>> newfrontend
     $scope.adminDisplay = function(displayChoice) {
         $scope.menuSelection = displayChoice;
 
