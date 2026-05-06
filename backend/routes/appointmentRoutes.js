@@ -5,6 +5,9 @@ const Appointment = require('../models/Appointment');
 const auth = require('../middleware/auth');
 const roleAuth = require('../middleware/roleAuth');
 
+const sendEmail = require('../utils/emailService');
+const User = require('../models/User');
+
 router.post('/', auth, roleAuth(["student"]), async (req, res) => {
   try {
 
@@ -29,9 +32,12 @@ router.post('/', auth, roleAuth(["student"]), async (req, res) => {
     const existing = await Appointment.findOne({
       tutor,
       date,
-      startTime,
-      endTime,
-      status: { $ne: "cancelled" }
+      status: { $in: ["booked", "no-show"] },
+      $or: [
+        { startTime, endTime },
+        { startTime: { $lte: startTime }, endTime: { $gt: startTime } },
+        { startTime: { $lt: endTime }, endTime: { $gte: endTime } }
+      ]
     });
 
     if (existing) {
@@ -51,6 +57,20 @@ router.post('/', auth, roleAuth(["student"]), async (req, res) => {
     });
 
     await appointment.save();
+
+    const student = await User.findById(req.user.id);
+    const tutorUser = await User.findById(tutor);
+
+    const message = `
+Appointment Confirmation
+
+Course: ${course}
+Date: ${date}
+Time: ${startTime} - ${endTime}
+`;
+
+    await sendEmail(student.email, "Appointment Confirmation", message);
+    await sendEmail(tutorUser.email, "New Tutoring Appointment", message);
 
     res.status(201).json(appointment);
 
@@ -78,7 +98,7 @@ router.get('/tutor', auth, roleAuth(["tutor"]), async (req, res) => {
   try {
 
     const appointments = await Appointment.find({
-      tutor: req.user.name
+      tutor: req.user.id
     });
 
     res.json(appointments);
@@ -123,7 +143,7 @@ router.put('/comment/:id', auth, roleAuth(["tutor"]), async (req, res) => {
       return res.status(404).json({ message: "Not found" });
     }
 
-    if (appointment.tutor !== req.user.name) {
+    if (appointment.tutor.toString() !== req.user.id) {
       return res.status(403).json({ message: "Not allowed" });
     }
 
@@ -147,7 +167,7 @@ router.put('/no-show/:id', auth, roleAuth(["tutor"]), async (req, res) => {
       return res.status(404).json({ message: "Not found" });
     }
 
-    if (appointment.tutor !== req.user.name) {
+    if (appointment.tutor.toString() !== req.user.id) {
       return res.status(403).json({ message: "Not allowed" });
     }
 
