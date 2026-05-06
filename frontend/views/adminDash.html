@@ -143,8 +143,11 @@
                         <tr ng-repeat="a in tutorAvailability">
                             <td>{{a.tutor.name}}</td>
                             <td>{{a.day}}</td>
-                            <td>{{a.startTime}}</td>
-                            <td>{{a.endTime}}</td>
+
+                            <!-- FIXED TIME DISPLAY -->
+                            <td>{{a.startTime | date:'shortTime'}}</td>
+                            <td>{{a.endTime | date:'shortTime'}}</td>
+
                             <td>
                                 <button class="btn btn-danger btn-sm" ng-click="deleteAvailability(a._id)">
                                     delete

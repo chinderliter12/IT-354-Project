@@ -146,9 +146,15 @@ myApp.controller('adminFunctions', ['$scope', '$http', function ($scope, $http) 
 
         const token = localStorage.getItem("token");
 
+        // FIX: force capitalized day (fixes Mongo enum crash)
+        const fixedDay = $scope.selectedTutorAvailability.day
+            ? $scope.selectedTutorAvailability.day.charAt(0).toUpperCase() +
+              $scope.selectedTutorAvailability.day.slice(1)
+            : "";
+
         const data = {
             tutorId: $scope.selectedTutorAvailability.tutorId,
-            day: $scope.selectedTutorAvailability.day,
+            day: fixedDay,
             startTime: $scope.selectedTutorAvailability.startTime,
             endTime: $scope.selectedTutorAvailability.endTime
         };

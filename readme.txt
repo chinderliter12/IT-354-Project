@@ -24,6 +24,8 @@ Team Members and Roles:
 Cameron Hinderliter - Team Lead
 Cameron was the one primarily in charge of front-end interaction and angularjs code. 
 Cameron handled most of the main pages you can navigate between, and the angularjs functions.
+Cameron's team lead responsibilities were primarily ensuring that the group was meeting consistently, 
+and to ensure work was done professionally. Cameron handled all of the github merges and gathering all of the group's work to submit.
 
 Isaiah Essex
 Isaiah was primarily in charge of backend functionality and database interactions.

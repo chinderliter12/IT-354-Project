@@ -25,8 +25,11 @@ app.use('/api/appointments', appointmentRoutes);
 app.use('/api/auth', authRoute);
 app.use('/api/courses', courseRoutes);
 app.use('/api/users', userRoutes);
-app.use('/api/admin', adminAvailabilityRoutes);
+
+// FIXED ROUTES (these were missing)
+app.use('/api/admin/availability', adminAvailabilityRoutes);
 app.use('/api/logs', auditLogRoutes);
+
 
 // Health check
 app.get('/api/health', (req, res) => {
