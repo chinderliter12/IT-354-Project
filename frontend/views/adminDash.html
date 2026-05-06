@@ -1,11 +1,11 @@
 
-<!-- Page that is used for all admin-specific operations -->
+<!-- page that is used for all admin-specific operations -->
 
 <!DOCTYPE html>
 <html lang="en" ng-app="myBigApp" ng-controller="handleEvents">
 
 <head>
-    <title>Admin Dashboard</title>
+    <title>admin dashboard</title>
     <link href="../assets/css/styles.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="../app/lib/angular.min.js"></script>
@@ -13,57 +13,62 @@
 </head>
 
 <body>
-    <div ng-if=""></div>
+
     <header ng-include="headerString"></header>
 
     <div style="margin: 40px;">
         <ul class="list-group">
+
+            <!-- create user -->
             <li class="list-group-item">
-                <h5>Create New User</h5>
+                <h5>create new user</h5>
                 <div class="container justify-content-center mx-auto" style="max-width: 600px;">
                     <div class="d-flex flex-column gap-3">
-                        <input id="userName" type="text" placeholder="Name" class="form-control mx-auto" style="max-width: 500px;" />
-                        <input id="userUsername" type="text" placeholder="Username" class="form-control mx-auto" style="max-width: 500px;" />
-                        <input id="userEmail" type="text" placeholder="Email" class="form-control mx-auto" style="max-width: 500px;" />
-                        <input id="userPass" type="text" placeholder="Password" class="form-control mx-auto" style="max-width: 500px;" />
-                        <select id="userRole" class="form-select" aria-label="User Role Selection">
-                            <option disabled selected>User Role</option>
-                            <option value="student">Student</option>
-                            <option value="tutor">Tutor</option>
+                        <input id="userName" type="text" placeholder="name" class="form-control mx-auto" style="max-width: 500px;" />
+                        <input id="userUsername" type="text" placeholder="username" class="form-control mx-auto" style="max-width: 500px;" />
+                        <input id="userEmail" type="text" placeholder="email" class="form-control mx-auto" style="max-width: 500px;" />
+                        <input id="userPass" type="text" placeholder="password" class="form-control mx-auto" style="max-width: 500px;" />
+                        <select id="userRole" class="form-select">
+                            <option disabled selected>user role</option>
+                            <option value="student">student</option>
+                            <option value="tutor">tutor</option>
                         </select>
                     </div>
 
-                    <button class="btn btn-secondary btn-md d-block mx-auto mt-3" ng-click="addUser()">Submit</button>
+                    <button class="btn btn-secondary btn-md d-block mx-auto mt-3" ng-click="addUser()">submit</button>
                 </div>
             </li>
 
+            <!-- create course -->
             <li class="list-group-item">
-                <h5>Create Course</h5>
+                <h5>create course</h5>
                 <div class="container justify-content-center mx-auto" style="max-width: 600px;">
                     <div class="d-flex flex-column gap-3">
-                        <input type="text" ng-model="newCourse.name" placeholder="Course Name" class="form-control mx-auto" style="max-width: 500px;" />
-                        <input type="text" ng-model="newCourse.description" placeholder="Description" class="form-control mx-auto" style="max-width: 500px;" />
+                        <input type="text" ng-model="newCourse.name" placeholder="course name" class="form-control mx-auto" style="max-width: 500px;" />
+                        <input type="text" ng-model="newCourse.description" placeholder="description" class="form-control mx-auto" style="max-width: 500px;" />
+
                         <select ng-model="newCourse.tutor" class="form-select">
-                            <option disabled selected>Select Tutor</option>
+                            <option disabled selected>select tutor</option>
                             <option ng-repeat="user in users" ng-if="user.role === 'tutor'" value="{{user._id}}">
                                 {{user.name}}
                             </option>
                         </select>
                     </div>
 
-                    <button class="btn btn-primary btn-md d-block mx-auto mt-3" ng-click="createCourse()">Create Course</button>
+                    <button class="btn btn-primary btn-md d-block mx-auto mt-3" ng-click="createCourse()">create course</button>
                 </div>
             </li>
 
+            <!-- users table -->
             <li class="list-group-item">
-                <h5>Users (Students & Tutors)</h5>
+                <h5>users (students & tutors)</h5>
                 <table class="table">
                     <thead>
                         <tr>
-                            <th>Role</th>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Active</th>
+                            <th>role</th>
+                            <th>name</th>
+                            <th>email</th>
+                            <th>active</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -78,8 +83,80 @@
                     </tbody>
                 </table>
             </li>
+
+            <!-- tutor availability (NEW SECTION) -->
+            <li class="list-group-item">
+                <h5>assign tutor hours</h5>
+
+                <div class="container justify-content-center mx-auto" style="max-width: 600px;">
+                    <div class="d-flex flex-column gap-3">
+
+                        <!-- tutor select -->
+                        <select class="form-select" ng-model="selectedTutorAvailability.tutorId">
+                            <option disabled selected>select tutor</option>
+                            <option ng-repeat="user in users" ng-if="user.role === 'tutor'" value="{{user._id}}">
+                                {{user.name}}
+                            </option>
+                        </select>
+
+                        <!-- day select -->
+                        <select class="form-select" ng-model="selectedTutorAvailability.day">
+                            <option disabled selected>select day</option>
+                            <option>monday</option>
+                            <option>tuesday</option>
+                            <option>wednesday</option>
+                            <option>thursday</option>
+                            <option>friday</option>
+                            <option>saturday</option>
+                            <option>sunday</option>
+                        </select>
+
+                        <!-- time inputs -->
+                        <input type="time" class="form-control" ng-model="selectedTutorAvailability.startTime">
+                        <input type="time" class="form-control" ng-model="selectedTutorAvailability.endTime">
+
+                    </div>
+
+                    <button class="btn btn-dark mt-3 d-block mx-auto" ng-click="assignTutorHours()">
+                        assign hours
+                    </button>
+                </div>
+            </li>
+
+            <!-- view all availability -->
+            <li class="list-group-item">
+                <h5>all tutor schedules</h5>
+
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>tutor</th>
+                            <th>day</th>
+                            <th>start</th>
+                            <th>end</th>
+                            <th>action</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr ng-repeat="a in tutorAvailability">
+                            <td>{{a.tutor.name}}</td>
+                            <td>{{a.day}}</td>
+                            <td>{{a.startTime}}</td>
+                            <td>{{a.endTime}}</td>
+                            <td>
+                                <button class="btn btn-danger btn-sm" ng-click="deleteAvailability(a._id)">
+                                    delete
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </li>
+
         </ul>
     </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

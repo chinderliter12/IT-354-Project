@@ -10,13 +10,11 @@ Left to Complete:
         -Change tutoring hours and availability
         -Assign tutor hours
         -View all appointments
-        -Create new courses
         -Enable and disable user accounts
     General:
     
         -Only let users access URLs that they should be able to access (student can't type in adminDash.html)
         -Login trail and account lockout for incorrect login
-        -External API integration
         -Frontend and backend data validation
         -Project submission documentation
     Optional:
@@ -28,6 +26,7 @@ Already Completed:
     Student:
         -Booking Appointment
         -Student Dashboard
+        -Appointment confirmation email
     Tutor:
         -View appointments
         -Add comments to appointments
@@ -40,8 +39,8 @@ Already Completed:
         -Admin Dashboard
     General:
         -Proper header implementation
-
         -Authentication for students, tutors, and admin
         -Authorization using roles
         -Secure password handling
         -No secrets in GitHub
+        -Notification log for emails
