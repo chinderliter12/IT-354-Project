@@ -6,8 +6,11 @@ myApp.controller('adminFunctions', ['$scope', '$http', function ($scope, $http) 
 
     $scope.displayChoice = 'student';
     $scope.menuSelection = 'student';
+
+    $scope.courses = [];
     $scope.newCourse = {};
     $scope.users = [];
+
     $scope.tutorAvailability = [];
     $scope.selectedTutorAvailability = {};
     
@@ -119,6 +122,8 @@ myApp.controller('adminFunctions', ['$scope', '$http', function ($scope, $http) 
             endTime: $scope.selectedTutorAvailability.endTime
         };
 
+        console.log(data);
+
         $http.post(`${API_URL}/admin/availability`, data, {
             headers: { Authorization: `Bearer ${token}` }
         })
@@ -221,11 +226,6 @@ myApp.controller('loginFunctions', ['$scope', '$http', function ($scope, $http) 
 
 myApp.controller('handleEvents', ['$scope', '$http', function ($scope, $http) {
 
-    const API_URL = "http://localhost:5001/api";
-
-    $scope.appointment = {};
-    $scope.appointments = [];
-    $scope.courses = [];
     $scope.tutorAppointments = [];
 
     // prevent double-click / double request
@@ -251,6 +251,16 @@ myApp.controller('handleEvents', ['$scope', '$http', function ($scope, $http) {
     max.setDate(max.getDate() + 21);
     $scope.maxDate = max.toISOString().split("T")[0];
 
+}]);
+
+myApp.controller('studentFunctions', ['$scope', '$http', function ($scope, $http) {
+
+    const API_URL = "http://localhost:5001/api";
+
+    $scope.appointment = {};
+    $scope.appointments = [];
+    $scope.courses = [];
+    
     $scope.getCourses = function () {
         $http.get(`${API_URL}/courses`)
             .then(res => {
@@ -335,6 +345,24 @@ myApp.controller('handleEvents', ['$scope', '$http', function ($scope, $http) {
         .catch(err => console.error(err));
     };
 
+    $scope.getCourses();
+    $scope.getMyAppointments();
+}])
+
+myApp.controller('tutorFunctions', ['$scope', '$http', function ($scope, $http) {
+
+    const API_URL = "http://localhost:5001/api";
+
+    $scope.cancelAppointment = function(id) {
+        const token = localStorage.getItem("token");
+
+        $http.put(`${API_URL}/appointments/cancel/${id}`, {}, {
+            headers: { Authorization: `Bearer ${token}` }
+        })
+        .then(() => $scope.getMyAppointments())
+        .catch(err => console.error(err));
+    };
+
     $scope.getTutorAppointments = function () {
 
         const token = localStorage.getItem("token");
@@ -349,8 +377,8 @@ myApp.controller('handleEvents', ['$scope', '$http', function ($scope, $http) {
         .catch(err => console.error(err));
     };
 
-    $scope.getCourses();
-    $scope.getMyAppointments();
     $scope.getTutorAppointments();
 
-}]);
+    $scope.getMyAppointments();
+
+}])

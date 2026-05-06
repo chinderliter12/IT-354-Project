@@ -9,13 +9,12 @@
     <script src="../app/app.js"></script>
 </head>
 
-<body ng-controller="handleEvents">
+<body ng-controller="tutorFunctions">
     <div ng-controller="loginFunctions">
         <header ng-include="headerString"></header>
     </div>
     <div class="container mt-4">
         <h2>Tutor Dashboard</h2>
-        <button class="btn btn-primary mb-3" ng-click="getTutorAppointments()">Refresh Appointments</button>
         <table class="table table-striped">
             <tr>
                 <th>Student</th>
@@ -49,18 +48,5 @@
             </tr>
         </table>
     </div>
-
-    <script>
-        // auto refresh every 30 seconds
-        setInterval(function () {
-            const scope = angular.element(document.body).scope();
-
-            if (scope && localStorage.getItem("role") === "tutor") {
-                scope.$apply(function () {
-                    scope.getTutorAppointments();
-                });
-            }
-        }, 30000);
-    </script>
 </body>
 </html>

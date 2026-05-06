@@ -16,7 +16,7 @@
     <div ng-controller="loginFunctions">
         <header ng-include="headerString"></header>
     </div>
-    <div class="main-container">
+    <div class="main-container" ng-controller="studentFunctions">
         <h4 style="margin-bottom: 40px;">Available Tutoring Sessions:</h4>
         <div class="container px-4" style="margin: 40px;">
             <input ng-model="searchString" type="text" placeholder="Search a course..." class="form-control"/>
