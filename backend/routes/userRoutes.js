@@ -17,14 +17,13 @@ router.get('/', auth, roleAuth(["admin"]), async (req, res) => {
   }
 });
 
-
-// Create tutor or admin (admin only)
+// Create tutor or student (admin only)
 router.post('/', auth, roleAuth(["admin"]), async (req, res) => {
   try {
 
     const { name, username, email, password, role } = req.body;
 
-    //  
+    // preventing incomplete user info
     if (!name || !username || !email || !password) {
       return res.status(400).json({ message: "Missing required fields" });
     }
@@ -68,19 +67,15 @@ router.post('/', auth, roleAuth(["admin"]), async (req, res) => {
   }
 });
 
-
-
+// update user active status
 router.put('/toggle/:id', auth, roleAuth(["admin"]), async (req, res) => {
   try {
-
     const user = await User.findById(req.params.id);
-
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
     user.active = !user.active;
-
     await user.save();
 
     res.json({

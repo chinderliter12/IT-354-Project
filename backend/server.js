@@ -12,7 +12,6 @@ app.use(express.json());
 
 
 // Routes
-
 const authRoute = require('./routes/auth');
 const bookingRoutes = require('./routes/bookingRoutes');
 const courseRoutes = require('./routes/courseRoutes');
@@ -21,7 +20,6 @@ const userRoutes = require('./routes/userRoutes');
 
 
 app.use('/api/bookings', bookingRoutes);
-
 app.use('/api/appointments', appointmentRoutes);
 app.use('/api/auth', authRoute);
 app.use('/api/courses', courseRoutes);
@@ -34,7 +32,6 @@ app.get('/api/health', (req, res) => {
 
 
 // DB Connection
-
 mongoose.connect(process.env.MONGO_URI)
     .then(() => console.log("MongoDB connected"))
     .catch(err => {
@@ -43,7 +40,6 @@ mongoose.connect(process.env.MONGO_URI)
 
 
 // FrontEnd
-
 app.use(express.static(path.join(__dirname, '../frontend')));
 
 app.get('/', (req, res) => {

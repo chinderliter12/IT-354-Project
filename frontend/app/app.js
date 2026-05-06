@@ -25,8 +25,6 @@ myApp.controller('handleEvents', ['$scope', '$http', function ($scope, $http) {
     $scope.headerString = '../subviews/guestHeader.html';
     $scope.logName = '';
 
-    $scope.newCourse = {};
-
     $scope.slots = [
         { label: "9:00 - 10:00", value: "9:00-10:00" },
         { label: "10:00 - 11:00", value: "10:00-11:00" },
@@ -120,6 +118,26 @@ myApp.controller('handleEvents', ['$scope', '$http', function ($scope, $http) {
         });
     };
 
+    $scope.updateActive = function(userId) {
+
+        const token = localStorage.getItem("token");
+
+        $http.put(`${API_URL}/users/toggle/${userId}`, {}, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+        .then(res => {
+            console.log("User ", res.data.user.name, " active status marked ", res.data.user.active)
+            $scope.getUsers();
+            alert("Active status updated");
+        })
+        .catch(err => {
+            console.error("Error updating user:", err);
+            alert(err.data?.message || "Failed to update user");
+        });
+    }
+
     $scope.addUser = function () {
 
         const newUser = {
@@ -146,25 +164,6 @@ myApp.controller('handleEvents', ['$scope', '$http', function ($scope, $http) {
         .catch(err => {
             console.error("CREATE USER ERROR:", err);
             alert(err.data?.message || "Failed to create user");
-        });
-    };
-
-    $scope.createCourse = function () {
-
-        const token = localStorage.getItem("token");
-
-        $http.post(`${API_URL}/courses`, $scope.newCourse, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        })
-        .then(res => {
-            alert("Course created!");
-            $scope.getCourses();
-        })
-        .catch(err => {
-            console.error("CREATE COURSE ERROR:", err);
-            alert(err.data?.message || "Failed to create course");
         });
     };
 

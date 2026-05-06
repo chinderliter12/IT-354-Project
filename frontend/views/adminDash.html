@@ -23,7 +23,7 @@
         </div>
 
         <!-- Student menu -->
-        <ul class="list-group" ng-if="menuSelection == 'student'">
+        <ul class="list-group mx-auto" ng-if="menuSelection == 'student'" style="max-width: 1200px;">
             
             <li id='studentMenu' class="list-group-item">
                 <h5>Create New User</h5>
@@ -39,7 +39,7 @@
                             <option value="tutor">Tutor</option>
                         </select>
                     </div>
-                    <button class="btn btn-secondary btn-md d-block mx-auto mt-3" ng-click="addUser()">Add User</button>
+                    <button class="btn btn-danger btn-md d-block mx-auto mt-3" ng-click="addUser()">Add User</button>
                 </div>
             </li>
 
@@ -55,12 +55,12 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr ng-repeat="user in users">
+                        <tr ng-repeat="user in users" ng-class="user.active == false ? 'table-secondary':''">
                             <td>{{user.role}}</td>
                             <td>{{user.name}}</td>
                             <td>{{user.email}}</td>
                             <td>
-                                <input type="checkbox" ng-model="user.active">
+                                <input type="checkbox" ng-click="updateActive(user._id)" ng-checked="user.active">
                             </td>
                         </tr>
                     </tbody>
@@ -69,12 +69,12 @@
         </ul>
 
         <!-- Tutor menu-->
-        <ul class="list-group" ng-if="menuSelection == 'tutor'">
+        <ul class="list-group mx-auto" ng-if="menuSelection == 'tutor'" style="max-width: 1200px;">
             <li>There is nothing to display.</li>
         </ul>
 
         <!-- Course menu-->
-        <ul class="list-group" ng-if="menuSelection == 'course'">
+        <ul class="list-group mx-auto" ng-if="menuSelection == 'course'" style="max-width: 1200px;">
             <li class="list-group-item">
                 <h5>Create Course</h5>
                 <div class="container justify-content-center mx-auto" style="max-width: 600px;">
@@ -82,14 +82,14 @@
                         <input type="text" ng-model="newCourse.name" placeholder="Course Name" class="form-control mx-auto" style="max-width: 500px;" />
                         <input type="text" ng-model="newCourse.description" placeholder="Description" class="form-control mx-auto" style="max-width: 500px;" />
                         <select ng-model="newCourse.tutor" class="form-select">
-                            <option disabled selected>Select Tutor</option>
+                            <option disabled selected value="">Select Tutor</option>
                             <option ng-repeat="user in users" ng-if="user.role === 'tutor'" value="{{user._id}}">
                                 {{user.name}}
                             </option>
                         </select>
                     </div>
 
-                    <button class="btn btn-primary btn-md d-block mx-auto mt-3" ng-click="createCourse()">Create Course</button>
+                    <button class="btn btn-danger btn-md d-block mx-auto mt-3" ng-click="createCourse()">Create Course</button>
                 </div>
             </li>
 

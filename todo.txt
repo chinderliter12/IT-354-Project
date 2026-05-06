@@ -2,7 +2,7 @@ Please update this as you complete tasks!
 Left to Complete:
     Student:
         -Cancel own appointment (with audit trail)
-        -Appointment confirmation email
+
     Tutor:
         -Mark start and end times
         -Cancel appointments
@@ -10,7 +10,6 @@ Left to Complete:
         -Change tutoring hours and availability
         -Assign tutor hours
         -View all appointments
-        -Create new courses
         -Enable and disable user accounts
     General:
         -Notification log for emails
@@ -28,6 +27,7 @@ Already Completed:
     Student:
         -Booking Appointment
         -Student Dashboard
+        -Appointment confirmation email
     Tutor:
         -View appointments
         -Add comments to appointments
@@ -40,7 +40,6 @@ Already Completed:
         -Admin Dashboard
     General:
         -Proper header implementation
-
         -Authentication for students, tutors, and admin
         -Authorization using roles
         -Secure password handling
