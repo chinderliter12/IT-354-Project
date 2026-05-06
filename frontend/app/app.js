@@ -137,9 +137,15 @@ myApp.controller('adminFunctions', ['$scope', '$http', function ($scope, $http) 
 
         const token = localStorage.getItem("token");
 
+        // FIX: force capitalized day (fixes Mongo enum crash)
+        const fixedDay = $scope.selectedTutorAvailability.day
+            ? $scope.selectedTutorAvailability.day.charAt(0).toUpperCase() +
+              $scope.selectedTutorAvailability.day.slice(1)
+            : "";
+
         const data = {
             tutorId: $scope.selectedTutorAvailability.tutorId,
-            day: $scope.selectedTutorAvailability.day,
+            day: fixedDay,
             startTime: $scope.selectedTutorAvailability.startTime,
             endTime: $scope.selectedTutorAvailability.endTime
         };
@@ -245,7 +251,7 @@ myApp.controller('handleEvents', ['$scope', '$http', function ($scope, $http) {
     $scope.tutorAppointments = [];
     $scope.isBooking = false;
 
-    // slots (fixed)
+    // FIXED: slots restored
     $scope.slots = [
         { label: "9:00 - 10:00", value: "9:00-10:00" },
         { label: "10:00 - 11:00", value: "10:00-11:00" },

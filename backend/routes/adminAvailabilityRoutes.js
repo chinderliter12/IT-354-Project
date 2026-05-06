@@ -1,47 +1,66 @@
-const mongoose = require('mongoose');
+const express = require('express');
+const router = express.Router();
 
-const availabilitySchema = new mongoose.Schema({
-  tutor: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true
-  },
+const Availability = require('../models/Availability');
+const auth = require('../middleware/auth');
+const roleAuth = require('../middleware/roleAuth');
 
-  day: {
-    type: String,
-    required: true,
-    enum: [
-      "monday",
-      "tuesday",
-      "wednesday",
-      "thursday",
-      "friday",
-      "saturday",
-      "sunday"
-    ]
-  },
+const User = require('../models/User');
 
-  startTime: {
-    type: String,
-    required: true,
-    trim: true
-  },
 
-  endTime: {
-    type: String,
-    required: true,
-    trim: true
-  },
+// GET ALL (ADMIN)
+router.get('/', auth, roleAuth(["admin"]), async (req, res) => {
+  try {
+    const data = await Availability.find()
+      .populate('tutor', 'name email')
+      .sort({ createdAt: -1 });
 
-  createdBy: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User'
-  },
-
-  createdAt: {
-    type: Date,
-    default: Date.now
+    res.json(data);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: err.message });
   }
 });
 
-module.exports = mongoose.model('Availability', availabilitySchema);
+
+// CREATE (ADMIN)
+router.post('/', auth, roleAuth(["admin"]), async (req, res) => {
+  try {
+
+    const { tutorId, day, startTime, endTime } = req.body;
+
+    const availability = new Availability({
+      tutor: tutorId,
+      day,
+      startTime,
+      endTime,
+      createdBy: req.user.id
+    });
+
+    await availability.save();
+
+    res.status(201).json(availability);
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: err.message });
+  }
+});
+
+
+// DELETE (ADMIN)
+router.delete('/:id', auth, roleAuth(["admin"]), async (req, res) => {
+  try {
+
+    await Availability.findByIdAndDelete(req.params.id);
+
+    res.json({ message: "Deleted" });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: err.message });
+  }
+});
+
+
+module.exports = router;
