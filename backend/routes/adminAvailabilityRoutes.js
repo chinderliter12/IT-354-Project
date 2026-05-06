@@ -23,23 +23,37 @@ router.get('/', auth, roleAuth(["admin"]), async (req, res) => {
 });
 
 
-// CREATE (ADMIN)
+// CREATE (ADMIN) - FIXED TIME HANDLING
 router.post('/', auth, roleAuth(["admin"]), async (req, res) => {
   try {
 
     const { tutorId, day, startTime, endTime } = req.body;
 
+    // Convert "HH:mm" into real Date objects
+    const today = new Date();
+
+    const [startH, startM] = startTime.split(':');
+    const [endH, endM] = endTime.split(':');
+
+    const start = new Date(today);
+    start.setHours(parseInt(startH), parseInt(startM), 0, 0);
+
+    const end = new Date(today);
+    end.setHours(parseInt(endH), parseInt(endM), 0, 0);
+
     const availability = new Availability({
       tutor: tutorId,
       day,
-      startTime,
-      endTime,
+      startTime: start,
+      endTime: end,
       createdBy: req.user.id
     });
 
     await availability.save();
 
-    res.status(201).json(availability);
+    const populated = await availability.populate('tutor', 'name email');
+
+    res.status(201).json(populated);
 
   } catch (err) {
     console.error(err);
