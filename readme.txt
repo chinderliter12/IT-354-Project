@@ -19,7 +19,7 @@ Open a browser, and navigate to localhost:5001.
 
 This will bring you to the home page, and you can navigate the website freely. 
 
-The security checklist, and the documentation for the google api documentation are included in .txt files in the github.
+The security checklist, and the documentation for the google api documentation are included in .txt files in this folder.
 
 Team Members and Roles:
 Cameron Hinderliter - Team Lead
