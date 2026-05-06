@@ -1,7 +1,5 @@
 Please update this as you complete tasks!
 Left to Complete:
-    Student:
-        Nothing!
     Tutor:
         -Mark start and end times
         -Cancel appointments

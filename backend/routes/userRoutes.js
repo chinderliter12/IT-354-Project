@@ -30,7 +30,7 @@ router.post('/', auth, roleAuth(["admin"]), async (req, res) => {
     }
 
     // name validation (letters only)
-    const nameRegex = /^[a-zA-Z\s]+$/;
+    const nameRegex = /^[A-Za-z ]{2,40}$/;
     if (!nameRegex.test(name)) {
       return res.status(400).json({
         message: "name can only contain letters"
@@ -38,7 +38,7 @@ router.post('/', auth, roleAuth(["admin"]), async (req, res) => {
     }
 
     // username validation
-    const usernameRegex = /^[a-zA-Z0-9_]+$/;
+    const usernameRegex = /^[A-Za-z\d_]{4,30}$/;
     if (!usernameRegex.test(username)) {
       return res.status(400).json({
         message: "username can only contain letters, numbers, and underscores"
@@ -46,7 +46,7 @@ router.post('/', auth, roleAuth(["admin"]), async (req, res) => {
     }
 
     // email validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const emailRegex = /^[A-Za-z\d_.-]+@[A-Za-z\d_.-]{4,30}$/;
     if (!emailRegex.test(email)) {
       return res.status(400).json({
         message: "invalid email format"

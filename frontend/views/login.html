@@ -19,23 +19,23 @@
 
     <div class="d-flex justify-content-center align-items-center">
         <div class="main-container" style="min-width: 500px; border: 2px solid gray; border-radius: 8px; padding: 40px;">
-            <form ng-submit="loginUser()" novalidate>
+            <form ng-submit="loginUser()" name="loginForm">
 
                 <h4>Login</h4><br>
 
                 <div class="mb-3">
                     <label>Email:</label>
-                    <input type="email" class="form-control" ng-model="loginData.email" required>
+                    <input type="email" name="email" class="form-control" ng-model="loginData.email" ng-pattern="emailRe" required>
+                    <span ng-show="loginForm.email.$error.pattern" class="text-danger">Invalid email format</span>
                 </div>
 
                 <div class="mb-3">
                     <label>Password:</label>
-                    <input type="password" class="form-control" ng-model="loginData.password" required>
+                    <input type="password" name="password" class="form-control" ng-model="loginData.password" ng-pattern="passwordRe" required>
+                    <span ng-show="loginForm.password.$error.pattern" class="text-danger">Invalid password format</span>
                 </div>
 
-                <button type="submit" class="btn btn-secondary w-100">
-                    Sign In
-                </button>
+                <button type="submit" class="btn btn-secondary w-100" ng-disabled="!loginForm.$valid">Sign In</button>
             </form>
         </div>
     </div>

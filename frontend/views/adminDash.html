@@ -31,18 +31,24 @@
             <li id='studentMenu' class="list-group-item">
                 <h5>Create New User</h5>
                 <div class="container justify-content-center mx-auto" style="max-width: 600px;">
-                    <div class="d-flex flex-column gap-3">
-                        <input id="userName" type="text" placeholder="Name" class="form-control mx-auto" style="max-width: 500px;" />
-                        <input id="userUsername" type="text" placeholder="Username" class="form-control mx-auto" style="max-width: 500px;" />
-                        <input id="userEmail" type="text" placeholder="Email" class="form-control mx-auto" style="max-width: 500px;" />
-                        <input id="userPass" type="text" placeholder="Password" class="form-control mx-auto" style="max-width: 500px;" />
-                        <select id="userRole" class="form-select mx-auto" aria-label="User Role Selection" style="max-width: 500px;">
-                            <option disabled selected>User Role</option>
-                            <option value="student">Student</option>
-                            <option value="tutor">Tutor</option>
-                        </select>
-                    </div>
-                    <button class="btn btn-danger btn-md d-block mx-auto mt-3" ng-click="addUser()">Add User</button>
+                    <form name="newUserForm">
+                        <div class="d-flex flex-column gap-3">
+                            <input id="userName" name="userName" type="text" placeholder="Name" class="form-control mx-auto" style="max-width: 500px;" ng-model="userName" ng-pattern="nameRe" required/>
+                            <span ng-show="newUserForm.userName.$error.pattern" class="text-danger">Invalid name format</span>
+                            <input id="userUsername" name="userUsername" type="text" placeholder="Username" class="form-control mx-auto" style="max-width: 500px;" ng-model="userUsername" ng-pattern="usernameRe" required/>
+                            <span ng-show="newUserForm.userUsername.$error.pattern" class="text-danger">Invalid username format</span>
+                            <input id="userEmail" name="userEmail" type="text" placeholder="Email" class="form-control mx-auto" style="max-width: 500px;" ng-model="userEmail" ng-pattern="emailRe" required/>
+                            <span ng-show="newUserForm.userEmail.$error.pattern" class="text-danger">Invalid email format</span>
+                            <input id="userPass" name="userPass" type="text" placeholder="Password" class="form-control mx-auto" style="max-width: 500px;" ng-model="userPass" ng-pattern="passwordRe" required/>
+                            <span ng-show="newUserForm.userPass.$error.pattern" class="text-danger">Invalid password format</span>
+                            <select id="userRole" class="form-select mx-auto" aria-label="User Role Selection" style="max-width: 500px;" required>
+                                <option disabled selected>User Role</option>
+                                <option value="student">Student</option>
+                                <option value="tutor">Tutor</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-danger btn-md d-block mx-auto mt-3" ng-click="addUser()" ng-disabled="!newUserForm.$valid">Add User</button>
+                    </form>
                 </div>
             </li>
 
@@ -158,7 +164,7 @@
                     <div class="d-flex flex-column gap-3">
                         <input type="text" ng-model="newCourse.name" placeholder="Course Name" class="form-control mx-auto" style="max-width: 500px;" />
                         <input type="text" ng-model="newCourse.description" placeholder="Description" class="form-control mx-auto" style="max-width: 500px;" />
-                        <select ng-model="newCourse.tutor" class="form-select" style="max-width: 500px;">
+                        <select ng-model="newCourse.tutor" class="form-select mx-auto" style="max-width: 500px;">
                             <option disabled selected value="">Select Tutor</option>
                             <option ng-repeat="user in users" ng-if="user.role === 'tutor' && user.active == true" value="{{user._id}}">
                                 {{user.name}}
