@@ -17,14 +17,15 @@ const bookingRoutes = require('./routes/bookingRoutes');
 const courseRoutes = require('./routes/courseRoutes');
 const appointmentRoutes = require('./routes/appointmentRoutes');
 const userRoutes = require('./routes/userRoutes');
+const adminAvailabilityRoutes = require('./routes/adminAvailabilityRoutes');
 const auditLogRoutes = require('./routes/auditLogRoutes');
-
 
 app.use('/api/bookings', bookingRoutes);
 app.use('/api/appointments', appointmentRoutes);
 app.use('/api/auth', authRoute);
 app.use('/api/courses', courseRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/admin', adminAvailabilityRoutes);
 app.use('/api/logs', auditLogRoutes);
 
 // Health check

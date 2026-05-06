@@ -245,6 +245,15 @@ myApp.controller('handleEvents', ['$scope', '$http', function ($scope, $http) {
     $scope.tutorAppointments = [];
     $scope.isBooking = false;
 
+    // slots (fixed)
+    $scope.slots = [
+        { label: "9:00 - 10:00", value: "9:00-10:00" },
+        { label: "10:00 - 11:00", value: "10:00-11:00" },
+        { label: "11:00 - 12:00", value: "11:00-12:00" },
+        { label: "1:00 - 2:00", value: "1:00-2:00" },
+        { label: "2:00 - 3:00", value: "2:00-3:00" }
+    ];
+
     const savedToken = localStorage.getItem("token");
 
     if (savedToken) {
@@ -273,33 +282,14 @@ myApp.controller('handleEvents', ['$scope', '$http', function ($scope, $http) {
 
         if ($scope.isBooking) return;
 
-        $scope.isBooking = true;
-
         const token = localStorage.getItem("token");
 
-        if (!$scope.appointment.slot) {
-            alert("please select a time slot");
-            $scope.isBooking = false;
+        if (!$scope.appointment.slot || !$scope.appointment.date) {
+            alert("select date and time");
             return;
         }
 
-        if (!$scope.appointment.date) {
-            alert("please select a date");
-            $scope.isBooking = false;
-            return;
-        }
-
-        if (!$scope.appointment.tutorName || !$scope.appointment.courseName) {
-            alert("please select a course");
-            $scope.isBooking = false;
-            return;
-        }
-
-        if (!$scope.appointment.slot.includes("-")) {
-            alert("invalid time slot format");
-            $scope.isBooking = false;
-            return;
-        }
+        $scope.isBooking = true;
 
         let times = $scope.appointment.slot.split("-");
 
